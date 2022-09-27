@@ -1,1 +1,0 @@
-Este direcctorio contiene backups de los archivos de configuracion de los virtual host
