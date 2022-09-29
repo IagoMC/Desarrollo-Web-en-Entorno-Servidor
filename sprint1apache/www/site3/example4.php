@@ -4,7 +4,7 @@
        
         <?php
         function edad_en_5_años($edad) {
-            return $edad + 10;
+            return $edad + 5;
         } 
           
         function mensaje($age) {
