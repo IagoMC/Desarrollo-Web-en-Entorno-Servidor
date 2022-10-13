@@ -1,4 +1,4 @@
-?php
+<?php
 	$db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die ('Fail');
 ?>
 <html>
@@ -7,14 +7,15 @@
 	 $libro_id = $_POST['libro_id'];
 	 $comentario = $_POST['new_comment'];
 
-	$query = "INSERT INTO tComentarios (comentario, usuario_id, libro_id) values ('".$comentario."',".$cancion_id.",null)";
+	$query = "INSERT INTO tComentarios (comentario, usuario_id, libro_id) values ('".$comentario."',NULL,".$libro_id.")";
+	
 	mysqli_query($db, $query) or die ('Error');
 	
 	echo "<p>Nuevo comentario ";
 	echo mysqli_insert_id($db);
 	echo " añadido</p>";
 
-	echo "<a href='/detail.php?cancion_id=".$libro_id."'>volver</a>";
+	echo "<a href='/detail.php?libro_id=".$libro_id."'>volver</a>";
 	mysqli_close($db);
 	?>
 	</body>
