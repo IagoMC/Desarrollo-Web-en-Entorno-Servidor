@@ -27,16 +27,18 @@ $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
       echo '<li>'.$row['comentario'].'</li>';
     }
 
-
+mysqli_close($db);
+	?>
+    
 	<p>Deja un nuevo comentario:</p>
 	<form action="/comment.php" method="post">
 		<textarea rows="4" cols="50" name="mew_comment"></textarea><br>
-		<input type="hidden" name="libro_id" value="<?php echo $libro_id; ?>">
+		<input type="hidden" name="libro_id" value=<?php echo $libro_id; ?>>
 		<input type="submit" value="comentar">
 	</form>
 
-    mysqli_close($db);
-  ?>
+
+  
   </ul>
   </body>
 </html>
