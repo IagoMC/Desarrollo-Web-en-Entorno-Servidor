@@ -2,9 +2,18 @@
   $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
 ?>
 <html>
+<head>
+	<style>
+	img{
+		max-width: 100%;
+		max-height: 100%;
+	}
+	</style>
+
+</head>
 <body>
 <h1>Conexion establecida</h1>
-<table>
+<table border="1" >
 
   <?php
   // Lanzar una query
@@ -21,9 +30,9 @@
     echo '</td>';
 	  echo '<br>';
 
-	  echo '<td>'<a href="detail.php?libro_id='$row[0];
-	  echo '"><img src="'.row[2];
-	  echo '</td>';
+	  echo '<td><a href="/detail.php?libro_id='.$row[0];
+	  echo '"><img src="'.$row[2];
+	  echo '"></a></td>';
 	  echo '<br>';
 
 	  echo '<td>'.$row[3];
