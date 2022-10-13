@@ -24,7 +24,7 @@ $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
     $query2 = 'SELECT * FROM tComentarios WHERE libro_id='.$libro_id;
     $result2 = mysqli_query($db, $query2) or die('Query error2');
     while ($row = mysqli_fetch_array($result2)) {
-      echo '<li>'.$row['comentario'].'</li>';
+      echo '<li>'.$row[1].' '.$row['fecha'].'</li>';
     }
 
 mysqli_close($db);
@@ -32,7 +32,7 @@ mysqli_close($db);
     
 	<p>Deja un nuevo comentario:</p>
 	<form action="/comment.php" method="post">
-		<textarea rows="4" cols="50" name="mew_comment"></textarea><br>
+		<textarea rows="4" cols="50" name="new_comment"></textarea><br>
 		<input type="hidden" name="libro_id" value="<?php echo $libro_id; ?>">
 		<input type="submit" value="comentar">
 	</form>

@@ -7,8 +7,7 @@
 	 $libro_id = $_POST['libro_id'];
 	 $comentario = $_POST['new_comment'];
 
-	$query = "INSERT INTO tComentarios (comentario, usuario_id, libro_id) values ('".$comentario."',NULL,".$libro_id.")";
-	
+	$query = "INSERT INTO tComentarios (comentario, libro_id, usuario_id, fecha) values ('".$comentario."',".$libro_id.",NULL,now())";	
 	mysqli_query($db, $query) or die ('Error');
 	
 	echo "<p>Nuevo comentario ";
