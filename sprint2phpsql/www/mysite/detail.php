@@ -5,7 +5,7 @@ $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
   <body>
   <?php
     if (!isset($_GET['libro_id'])) {
-      die('No se ha especificado una canción');
+      die('No se ha especificado un libro');
     }
     $libro_id = $_GET['libro_id'];
     $query = 'SELECT * FROM tLibros WHERE id='.$libro_id;
