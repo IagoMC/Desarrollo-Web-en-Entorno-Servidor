@@ -5,8 +5,15 @@
 <head>
 	<style>
 	img{
-		max-width: 100%;
-		max-height: 100%;
+		width: 200px;
+		height: 300px;
+	}
+	td{
+		padding:15px;
+		text-align:center;
+	}
+	.color{
+		background-color:red;
 	}
 	</style>
 
@@ -15,14 +22,25 @@
 <h1>Conexion establecida</h1>
 <table border="1" >
 
+	<tr>
+	 <td class="color">ID</td>
+	 <td class="color">Titulo</td>
+	 <td class="color">Foto</td>
+	 <td class="color">Genero</td>
+	 <td class="color">Autor</td>
+	</tr>
+
   <?php
   // Lanzar una query
   $query = 'SELECT * FROM tLibros';
   $result = mysqli_query($db, $query) or die('Query error');
   // Recorrer el resultado
   while ($row = mysqli_fetch_array($result)) {
-  	echo '<tr>';
-  	echo '<td>'.$row[0];
+  	
+
+
+	echo '<tr>';
+  	echo '<td class="pa">'.$row[0];
   	echo '</td>';
   	echo '<br>';	
 
