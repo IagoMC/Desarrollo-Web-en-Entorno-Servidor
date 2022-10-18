@@ -1,5 +1,3 @@
-numeroU2=int(input('Introduce un numero '))
- 
 
 def func_factorial2 (numero):
     final=numero 
@@ -16,4 +14,4 @@ def func_factorial2 (numero):
     return final
 
 
-print(func_factorial2(numeroU2))
+#print(func_factorial2(numeroU2))
