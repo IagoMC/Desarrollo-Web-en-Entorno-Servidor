@@ -1,7 +1,9 @@
 <?php
-$db = mysqli_connect('localhost', 'root', '1234', 'web_canciones') or die('Fail');
-$email_posted = $_POST['f_email'];
+$db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
+
+$email_posted = $POST['f_email'];
 $password_posted = $_POST['f_password'];
+
 $query = "SELECT id, contraseña FROM tUsuarios WHERE email = '" . $email_posted . "'";
 $result = mysqli_query($db, $query) or die('Query error');
 if (mysqli_num_rows($result) > 0) {
