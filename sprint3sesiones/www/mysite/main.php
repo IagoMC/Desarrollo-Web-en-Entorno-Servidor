@@ -18,8 +18,8 @@
 	
 	h1{
 		width: 100px;
-   		height: 100px;
-    		background: #f92672;
+   		height: 200px;
+    		
     		transition: width 2s, height 2s, margin 2s;
     		margin: 50px auto 0;
 	}
