@@ -4,6 +4,12 @@
 <html>
 	<body>
 	<?php
+		
+	session_start();
+	$user_id_a_insertar = 'NULL';
+	if (!empty($_SESSION['user_id'])) {
+	$user_id_a_insertar = $_SESSION['user_id'];
+	}
 	 $libro_id = $_POST['libro_id'];
 	 $comentario = $_POST['new_comment'];
 
