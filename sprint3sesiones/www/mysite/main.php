@@ -17,19 +17,29 @@
 	}
 	
 	h1{
+	/*
 		width: 100px;
    		height: 200px;
     		
     		transition: width 2s, height 2s, margin 2s;
     		margin: 50px auto 0;
+	*/
 	}
 	
 	h1:hover{
    	 width: 100%;
-   	 height: 200px;
+   	 height: 50px;
    	 margin: 0 auto;
+	text-align: center;
+	background: red;
 }	
+
+	.tr1:hover{
+	background: green;
+	}
 		
+	
+	
 	</style>
 
 </head>
@@ -55,7 +65,7 @@
   	
 
 
-	echo '<tr>';
+	echo '<tr class="tr1">';
   	echo '<td class="pa">'.$row[0];
   	echo '</td>';
   	echo '<br>';	
