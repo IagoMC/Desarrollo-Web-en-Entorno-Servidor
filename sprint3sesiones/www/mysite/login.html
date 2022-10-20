@@ -7,7 +7,7 @@
         document.getElementById("formulario").addEventListener('submit', validarFormulario); 
 });
 
-function validarFormulario() {
+function validarFormulario(evento) {
   evento.preventDefault();
   var email = document.getElementById('email').value;
   if(email.length == 0) {
@@ -15,7 +15,7 @@ function validarFormulario() {
     return;
   }
   var contraseña = document.getElementById('contraseña').value;
-  if (contraseña.length < 6) {
+  if (contraseña.length < 4) {
     alert('La contraseña no es válida');
     return;
   }
