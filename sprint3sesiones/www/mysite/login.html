@@ -7,7 +7,7 @@
         document.getElementById("formulario").addEventListener('submit', validarFormulario); 
 });
 
-function validarFormulario(evento) {
+function validarFormulario() {
   evento.preventDefault();
   var email = document.getElementById('email').value;
   if(email.length == 0) {
@@ -26,9 +26,9 @@ function validarFormulario(evento) {
 
 <body>
     <h1>Login</h1>
-    <form action="login.php" method="post">
-        <input name="f_email" type="text" placeholder="e-mail"><br>
-        <input name="f_password" type="password" placeholder="Contraseña"><br>
+    <form id="formulario" action="login.php" method="post">
+        <input id="email" name="f_email" type="text" placeholder="e-mail"><br>
+        <input id="contraseña" name="f_password" type="password" placeholder="Contraseña"><br>
         <input type="submit" value="Iniciar sesión">
     </form>
 </body>
