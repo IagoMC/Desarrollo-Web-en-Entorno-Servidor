@@ -17,6 +17,12 @@
 	}
 	
 	h1{
+		width: 100px;
+   	 	height: 50px;
+    		background: #f92672;
+    		color: white;
+    		font-weight: bold;
+    		-webkit-transition: width 1s,
 		background 1s;
    		-moz-transition: width 1s, background 1s;
     		-o-transition: width 1s, background 1s;
