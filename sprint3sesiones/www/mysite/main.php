@@ -15,6 +15,17 @@
 	.color{
 		background-color:red;
 	}
+	
+	h1{
+		background 1s;
+   		-moz-transition: width 1s, background 1s;
+    		-o-transition: width 1s, background 1s;
+    		transition: width 1s, background 1s;
+    		padding: 10px;
+    		margin: 10px;
+	
+		
+		}
 	</style>
 
 </head>
