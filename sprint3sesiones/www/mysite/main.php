@@ -11,7 +11,7 @@
 	
 	img:hover{
 		width: 100%;
-    		height: 200px;
+    		height: 500px;
     		margin: 0 auto;
 	}
 	td{
