@@ -18,20 +18,18 @@
 	
 	h1{
 		width: 100px;
-   	 	height: 50px;
+   		height: 100px;
     		background: #f92672;
-    		color: white;
-    		font-weight: bold;
-    		-webkit-transition: width 1s,
-		background 1s;
-   		-moz-transition: width 1s, background 1s;
-    		-o-transition: width 1s, background 1s;
-    		transition: width 1s, background 1s;
-    		padding: 10px;
-    		margin: 10px;
+    		transition: width 2s, height 2s, margin 2s;
+    		margin: 50px auto 0;
+	}
 	
+	h1:hover{
+   	 width: 100%;
+   	 height: 200px;
+   	 margin: 0 auto;
+}	
 		
-		}
 	</style>
 
 </head>
