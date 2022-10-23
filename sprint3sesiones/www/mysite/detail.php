@@ -22,9 +22,13 @@ $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
     <ul>
     <?php
     $query2 = 'SELECT * FROM tComentarios WHERE libro_id='.$libro_id;
+    $query3 = 'SELECT tUsuarios.nombre FROM tUsuarios, tComentarios WHERE tUsuarios.id=usuario_id and libro_id='.$libro_id;
     $result2 = mysqli_query($db, $query2) or die('Query error2');
-    while ($row = mysqli_fetch_array($result2)) {
-      echo '<li>'.$row[1].' '.$row['fecha'].'</li>';
+    $result3 = mysqli_query($db, $query3) or die('Query error3');
+
+
+    while ($row = mysqli_fetch_array($result2) and $row2=mysqli_fetch_array($result3)) {
+      echo '<li>'.$row['comentario'].' '.$row['fecha']." ".$row2['nombre'].'</li>';
     }
 
 mysqli_close($db);
