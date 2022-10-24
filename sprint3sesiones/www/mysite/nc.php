@@ -1,35 +1,42 @@
 <?php
 $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
 
-$user_id_a_insertar = 'NULL';
+session_start();
+$user = 'NULL';
 if (!empty($_SESSION['user_id'])) {
 $user = $_SESSION['user_id'];
 }
 $password_posted = $_POST['f_password2'];
 $Nueva = $_Post['Nueva'];
 $Nueva2 = $_Post['Nueva2'];
-
-$query = "SELECT contraseña FROM tUsuarios WHERE id = '".$user."'";
+echo $user;
+$query = "SELECT contraseña FROM tUsuarios WHERE id = ".$user;
 
 
 $result = mysqli_query($db, $query) or die('Query error');
 
 if (mysqli_num_rows($result) > 0) {
     $only_row = mysqli_fetch_array($result);
-    if ($only_row[1] == $password_posted) {
+    if ($only_row[0] == $password_posted) {
         //session_start();
 	
         //$_SESSION['user_id'] = $only_row[0];
 	if ($Nueva2==$Nueva){	
-		$query = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where id = '.$user.'"; 
+	echo 'n1'.$Nueva;
+	echo 'n2'.$Nueva2;
+	
+	$query2 = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where id =".$user; 
+	$result = mysqli_query($db, $query2) or die('Query error');
+
 	//echo 'confirmado';
-	}
+	echo '<p>Confirmado</p>';	
+}else{
 
 	//session_start();
 	//$_SESSION['user_id'] = $Nueva;
         //header('Location: main.php');  
-	echo '<p>Confirmado</p>';  
-
+	echo '<p>NO</p>';  
+}
 } else {
         echo '<p>Contraseña incorrecta</p>';
     }
