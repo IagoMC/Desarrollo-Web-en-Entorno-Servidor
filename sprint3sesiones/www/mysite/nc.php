@@ -1,12 +1,15 @@
 <?php
 $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
 
-session_start();
+$user_id_a_insertar = 'NULL';
+if (!empty($_SESSION['user_id'])) {
+$user = $_SESSION['user_id'];
+}
 $password_posted = $_POST['f_password2'];
 $Nueva = $_Post['Nueva'];
 $Nueva2 = $_Post['Nueva2'];
 
-$query = "SELECT contraseña FROM tUsuarios WHERE email = '" .$email_posted. "'";
+$query = "SELECT contraseña FROM tUsuarios WHERE id = '".$user."'";
 
 
 $result = mysqli_query($db, $query) or die('Query error');
@@ -18,7 +21,7 @@ if (mysqli_num_rows($result) > 0) {
 	
         //$_SESSION['user_id'] = $only_row[0];
 	if ($Nueva2==$Nueva){	
-		$query = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where email = '.$email_posted.'"; 
+		$query = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where id = '.$user.'"; 
 	//echo 'confirmado';
 	}
 
