@@ -1,22 +1,26 @@
 <?php
 $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
 
-$email_posted = $_POST['f_email2'];
+session_start();
 $password_posted = $_POST['f_password2'];
 $Nueva = $_Post['Nueva'];
+$Nueva2 = $_Post['Nueva2'];
 
-$query = "SELECT id, contraseña FROM tUsuarios WHERE email = '" . $email_posted2 . "'";
+$query = "SELECT contraseña FROM tUsuarios WHERE email = '" .$email_posted. "'";
+
+
 $result = mysqli_query($db, $query) or die('Query error');
 
 if (mysqli_num_rows($result) > 0) {
     $only_row = mysqli_fetch_array($result);
-    if ($only_row[1] == $password_posted2) {
+    if ($only_row[1] == $password_posted) {
         //session_start();
 	
         //$_SESSION['user_id'] = $only_row[0];
-	$query = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where email = '.$email_posted2.'"; 
+	if ($Nueva2==$Nueva){	
+		$query = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where email = '.$email_posted.'"; 
 	//echo 'confirmado';
-
+	}
 
 	//session_start();
 	//$_SESSION['user_id'] = $Nueva;
