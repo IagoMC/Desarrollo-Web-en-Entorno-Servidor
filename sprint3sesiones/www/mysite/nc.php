@@ -14,7 +14,7 @@ if (mysqli_num_rows($result) > 0) {
         //session_start();
 	
         //$_SESSION['user_id'] = $only_row[0];
-	$query = "UPDATE tUsuarios SET contraseña = '".$Nueva. where email = .$email_posted2"'"; 
+	$query = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where email = '.$email_posted2.'"; 
 	//echo 'confirmado';
 
 

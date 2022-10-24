@@ -52,6 +52,7 @@
 <body>
 <h1>Conexion establecida</h1>
 <a href="/logout.php">Logout</a>
+<a href="/nc.html">Cambiar Contraseña</a>
 <table border="1" >
 
 	<tr>
