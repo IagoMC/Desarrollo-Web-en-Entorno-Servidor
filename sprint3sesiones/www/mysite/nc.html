@@ -1,1 +1,40 @@
-a
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("formulario").addEventListener('submit', validarFormulario); 
+});
+
+function validarFormulario(evento) {
+  evento.preventDefault();
+  var email = document.getElementById('email').value;
+  if(email.length == 0) {
+    alert('No has escrito nada en el email');
+    return;
+  }
+  var contraseña = document.getElementById('contraseña').value;
+  if (contraseña.length < 4) {
+    alert('La contraseña no es válida');
+    return;
+  }
+  this.submit();
+}
+    </script>
+</head>
+
+<body>
+   
+    <h1>Cambiar contraseña</h1>
+    <form id="formulario2" action="nc.php" method="post">
+        <input id="email2" name="f_email2" type="text" placeholder="e-mail"><br>
+        <input id="contraseña2" name="f_password2" type="password" placeholder="Contraseña"><br>
+        <input id="Nueva" name="Nueva" type="password" placeholder="Nueva Contraseña"><br>
+        <input id="Nueva2" name="Nueva2" type="password" placeholder="Nueva Contraseña"><br>
+
+        <input type="submit" value="Confirmar contraseña">
+    </form>
+</body>
+
+</html>
