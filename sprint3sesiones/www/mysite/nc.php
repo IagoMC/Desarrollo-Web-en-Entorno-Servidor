@@ -7,8 +7,8 @@ if (!empty($_SESSION['user_id'])) {
 $user = $_SESSION['user_id'];
 }
 $password_posted = $_POST['f_password2'];
-$Nueva = $_Post['Nueva'];
-$Nueva2 = $_Post['Nueva2'];
+$Nueva = $_POST['Nueva'];
+$Nueva2 = $_POST['Nueva2'];
 echo $user;
 $query = "SELECT contraseña FROM tUsuarios WHERE id = ".$user;
 
@@ -22,10 +22,10 @@ if (mysqli_num_rows($result) > 0) {
 	
         //$_SESSION['user_id'] = $only_row[0];
 	if ($Nueva2==$Nueva){	
-	echo 'n1'.$Nueva;
-	echo 'n2'.$Nueva2;
+	echo "$Nueva";
+	echo "$Nueva2";
 	
-	$query2 = "UPDATE tUsuarios SET contraseña = '.$Nueva.' where id =".$user; 
+	$query2 = "UPDATE tUsuarios SET contraseña = '".$Nueva."' where id =".$user; 
 	$result = mysqli_query($db, $query2) or die('Query error');
 
 	//echo 'confirmado';
