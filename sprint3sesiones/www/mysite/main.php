@@ -39,18 +39,20 @@
 	text-align: center;
 	background: red;
 }	
-
+	
 	.tr1:hover{
 	background: green;
 	}
-		
+	td:hover{
+		color:red;
+	}	
 	
 	
 	</style>
 
 </head>
 <body>
-<h1>Conexion establecida</h1>
+<h1>Pagina Web</h1>
 <a href="/logout.php">Logout</a>
 <a href="/nc.html">Cambiar Contraseña</a>
 <table border="1" >
