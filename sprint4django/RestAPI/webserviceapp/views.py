@@ -29,11 +29,10 @@ def devolver_cancion_por_id(request, id_solicitado):
 		diccionario = {}
 		diccionario['id'] = fila_comentario_sql.id
 		diccionario['comentario'] = fila_comentario_sql.comentario
+
 		diccionario['usuario_id'] = fila_comentario_sql.usuario_id
 		diccionario['libro_id'] = fila_comentario_sql.libro_id
 		diccionario['fecha'] = fila_comentario_sql.fecha
-
-
 
 		lista_comentarios.append(diccionario)
 	resultado = {
