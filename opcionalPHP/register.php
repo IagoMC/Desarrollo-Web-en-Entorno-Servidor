@@ -1,19 +1,20 @@
 <?php
-  $db = mysqli_connect('172.16.0.2', 'root', '1234', 'mysitedb') or die('Fail');
+  $db = mysqli_connect('localhost', 'root', '1234', 'mysitedb') or die('Fail');
 $usuario= $_POST['Usuario'];
 $email=$_POST['Email'];
-$contraseña=$_POST['contraseña'];
-$con_contraseña=$_POST['con_contraseña'];
+$contrasena=$_POST['contraseña'];
+$con_contrasena=$_POST['con_contraseña'];
 
-if ($con_contraseña!=$contraseña) {
+if ($con_contrasena!=$contrasena) {
     echo '<p>Contraseña no valida</p>';
 } else {
-    $contraseñaHash=password_hash($contraseña,PASSWORD_DEFAULT);
-    $query = $mysqli->prepare ("insert into usuarios values (?,?,?)");
-    $query->bind_param("sss",$usuario,$email,$contraseñaHash); 
+    $contrasenaHash=password_hash($contrasena,PASSWORD_DEFAULT);
+    $query = $db->prepare ("insert into usuarios (nombre, email, contrasena) values (?,?,?)");
+	
+    $query->bind_param("sss",$usuario,$email,$contrasenaHash); 
     $query->execute();
     $query->close();
-    header('Location: login.php');
+    header('Location: login.html');
 
 }
 
