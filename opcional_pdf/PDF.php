@@ -12,7 +12,7 @@ class PDF extends FPDF{
         $this->cell(30,10,'DIPLOMA',1,0,'C');
 	$this->cell(80);
 	$this->Image('af.PNG',170,5,25);
-	$this->Ln(20);  //salto de linea
+	$this->Ln(30);  //salto de linea
     }
     function Footer(){
     // Posición: a 1,5 cm del final
@@ -30,8 +30,10 @@ $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetFont('Arial','B',16);
 $pdf->Cell(40,10,'Tecnico Superior Desarrollo Aplicaciones Web'.' '.$nombre.' '.$apellidos);
-$pdf->Ln(20)
-$pdf->
+//$pdf->Ln(20)
+
+$pdf->Line(10,50,200,50);
+$pdf->Image('firma.png',160,250,40);
 $pdf->Output();
 
 
