@@ -5,14 +5,14 @@ $apellidos = $_POST['apellidos'];
 require('fpdf.php');
 
 class PDF extends FPDF{
-    function Header(){
-        $this->Image('xunta.png',10,10,50);
+    function Header(){          //1--2--3
+        $this->Image('xunta.png',10,10,50); //1: margen de ANCHO 2:margen de ALTO, 3:ancho imagen
 	$this->SetFont('Arial','B',15);
-        $this->cell(80);
+        $this->cell(80); //mover a la derecha
         $this->cell(30,10,'DIPLOMA',1,0,'C');
-	$this->cell(90);
-	$this->Image('afundacion.png',10,60,50);
-	
+	$this->cell(80);
+	$this->Image('af.PNG',170,5,25);
+	$this->Ln(20);  //salto de linea
     }
     function Footer(){
     // Posición: a 1,5 cm del final
@@ -29,7 +29,9 @@ $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage();
 $pdf->SetFont('Arial','B',16);
-$pdf->Cell(40,10,$nombre.' '.$apellidos);
+$pdf->Cell(40,10,'Tecnico Superior Desarrollo Aplicaciones Web'.' '.$nombre.' '.$apellidos);
+$pdf->Ln(20)
+$pdf->
 $pdf->Output();
 
 
