@@ -7,10 +7,12 @@ require('fpdf.php');
 class PDF extends FPDF{
     function Header(){
         $this->Image('xunta.png',10,10,50);
-        $this->SetFont('Arial','B',15);
+	$this->SetFont('Arial','B',15);
         $this->cell(80);
         $this->cell(30,10,'DIPLOMA',1,0,'C');
-
+	$this->cell(90);
+	$this->Image('afundacion.png',10,60,50);
+	
     }
     function Footer(){
     // Posición: a 1,5 cm del final
