@@ -1,12 +1,12 @@
 <?php
 $nombre = $_POST['nombre'];
-$apellido = $_POST['apellido'];
+$apellidos = $_POST['apellidos'];
 
 require('fpdf.php');
 $pdf = new FPDF();
 $pdf->AddPage();
 $pdf->SetFont('Arial','B',16);
-$pdf->Cell(40,10,$nombre.' '.$apellido);
+$pdf->Cell(40,10,$nombre.' '.$apellidos);
 $pdf->Output();
 
 
