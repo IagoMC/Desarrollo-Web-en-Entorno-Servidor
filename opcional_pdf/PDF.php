@@ -3,7 +3,14 @@ $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
 
 require('fpdf.php');
+$pdf = new FPDF();
+$pdf->AddPage();
+$pdf->SetFont('Arial','B',16);
+$pdf->Cell(40,10,$nombre.' '.$apellido);
+$pdf->Output();
 
+
+/*
 class PDF extends FPDF{
     function Header(){
         $this->Image('xunta.png',10,50,300);
@@ -28,5 +35,5 @@ class PDF extends FPDF{
     $pdf->SetFont('Times','',12);
    
     $pdf->Output();
-
+*/
 ?>
