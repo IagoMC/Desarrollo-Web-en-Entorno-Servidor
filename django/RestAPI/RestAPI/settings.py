@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'pai.apps.PaiConfig',
     'django.contrib.admin',
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -45,7 +46,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',	
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+# o
+CORS_ORIGIN_WHITELIST = [
+"http://example.com",
+"https://example.com",
+]
+
 
 ROOT_URLCONF = 'RestAPI.urls'
 
