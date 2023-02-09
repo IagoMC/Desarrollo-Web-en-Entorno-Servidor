@@ -50,11 +50,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-# o
-CORS_ORIGIN_WHITELIST = [
-"http://example.com",
-"https://example.com",
-]
+
 
 
 ROOT_URLCONF = 'RestAPI.urls'
