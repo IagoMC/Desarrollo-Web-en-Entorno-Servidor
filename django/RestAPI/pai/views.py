@@ -250,12 +250,32 @@ def editar_perfitl(reques):
 
 def buscar_photograpers(request):
 
+if request.method == "GET":
 	#cogemos los datos del cuerpo
 	query=json['query']
 	size=json['size']
 	rating=json['rating']
 	rated_under=json['rated_under']
 
+
+	if query!=None :
+		fotografo=Fotografo.objects.filter(
+			(Q(nombre__icontains==query) | Q(descripcion__icontains==query))
+		resultado= []
+		i=1
+		while i< fotografo.count():
+			resultado=({
+				'id':fotografo[i].id,
+				'Nombre': fotografo[i].nombre,
+
+
+			})
+			i=i+1
+
+	return JsonResponse(resultado)
+		
+
+"""
 #realizamos varias sentencias para seleccionar la busqueda correcta
 
 # si query no esta vacio y rating esta vacio realziamos esta busqueda
@@ -360,7 +380,7 @@ def buscar_photograpers(request):
 
 
 #El funcionamiento es simialr a la funcion anterior
-
+"""
 def buscar_agencies(request):
 	
 	query=json['query']
