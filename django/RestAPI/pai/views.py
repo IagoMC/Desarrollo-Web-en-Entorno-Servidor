@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from .models import Fotografo, Agencia
 from array import array
 from django.db import models
-from django.contrib.auth.hashers import hashpw, gensalt
+#from django.contrib.auth.hashers import hashpw, gensalt
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 import jwt
@@ -76,6 +76,7 @@ else:
 		indice=indice+1
 		
 """
+"""
 def cambiar_contraseña(request):
 	#pillamos los datos del body
 	json_load =json.loads(request.body)
@@ -132,7 +133,7 @@ def cambiar_contraseña(request):
 	
 
 	
-
+"""
 
 
 #################################################		
@@ -465,7 +466,7 @@ def buscar_agencies(request):
 
 
 #Aarón Saavedra Lagares
-
+"""
 def photographer (request):
     if request.method == 'GET':
         JsonResponse=[]
@@ -587,3 +588,4 @@ if id == '__main__':
 
 
 
+"""

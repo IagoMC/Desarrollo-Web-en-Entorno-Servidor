@@ -6,10 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-from django.contrib.auth.hashers import make_password
 
-from django.contrib.auth.hashers import check_password
-from .models import MyUser
 
 class Agencia(models.Model):
     id = models.IntegerField(primary_key=True)
