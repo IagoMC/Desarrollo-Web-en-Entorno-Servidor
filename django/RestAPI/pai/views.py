@@ -15,8 +15,10 @@ import string
 import random
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
+from django.conf import settings
 
 
+csrf_failure_view = settings.CSRF_FAILURE_VIEW
 User = get_user_model()
 
 @require_http_methods(["POST"])
