@@ -6,6 +6,7 @@ urlpatterns = [
  #   path('editar', views.editar_perfitl),
     path('password', views.cambiar_contrasena),
     path('getphographers', views.buscar_photograpers),
+    path('users',views.users),
 #    path('getagencies', views.buscar_agencies),
    # path('photographer', views.photograpers),
   #  path('agencia', views.agencia),
