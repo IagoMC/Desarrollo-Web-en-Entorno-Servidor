@@ -76,38 +76,40 @@ else:
 		indice=indice+1
 		
 """
-
+@csrf_exempt
 def cambiar_contrasena(request):
 	if request.method == "POST":
 		#pillamos los datos del body
 		json_load =json.loads(request.body)
 		#pillamos la contraseña antigua
-		contraseñaAntigua=json_load['contraseñaAntigua'] #dentro de los [] metemos el valor en react
+		contrasenaAntigua=json_load['contrasenaAntigua'] #dentro de los [] metemos el valor en react
 		#pillamos la contraseña nueva
-		ContraseñaNueva=json_load['ContraseñaNueva']
+		ContrasenaNueva=json_load['ContrasenaNueva']
 		#pillamos la repeticion de la contraseña nueva 
-		ContraseñaNueva2=json_load['ContraseñaNueva2']
+		ContrasenaNueva2=json_load['ContrasenaNueva2']
 
 			# Validamos la contraseña
-		if ContraseñaNueva!=ContraseñaNueva2:
+		if ContrasenaNueva!=ContrasenaNueva2:
 			return JsonResponse({'error': 'No coinciden'}, status=400)
 		else:
 			#Cogemos el token en la cabecera
-			tokens = json.loads(request.header)
-			if not tokens or tokens != token:
+			tokens = request.headers.get('token')
+			clientes=Clientes.objects.get(token=tokens)
+			if clientes==None:
 				return JsonResponse({'error': 'Invalid token'}, status=401)
 
-			if Clientes.objects.get(token=tokens )!= None:
-				cliente = Clientes.objects.get(token=tokens ) #seleccionamos el cliente con el token
-				if check_password(contraseñaAntigua, cliente.contraseña):#Validamos que la contraseña Antigua es del cliente
+			else:
+				#cliente = Clientes.objects.get(token=tokens ) #seleccionamos el cliente con el token
+				if check_password(contrasenaAntigua, cliente.contrasena): #Validamos que la contraseña Antigua es del cliente
 
-						cliente.contraseña=set_password(ContraseñaNueva) #Cambiamos la contraseña
+						cliente.contrasena=set_password(ContrasenaNueva) #Cambiamos la contraseña
 						#sentencias para cambiar la contraseña
 						print('contraseña cambiada')
 						cliente.save()
 				else:
-					return JsonResponse({'error': 'old_password incorrecta'}, status=403)
+					return JsonResponse({'error': 'contraseña incorrecta'}, status=403)
 
+"""
 
 			#Hacemos lo mismo en fotografos y agencias
 			elif Fotografo.objects.get(token=tokens )== None:
@@ -136,7 +138,7 @@ def cambiar_contrasena(request):
 	
 
 
-
+"""
 #################################################		
 """
 def editar_perfitl(reques):
@@ -254,7 +256,7 @@ def buscar_photograpers(request):
 	if request.method == "GET":
 	#cogemos los datos del cuerpo
 		#json_load=json.loads(request.body)
-		query=request.GET.get["query"]
+		query=request.GET.get('query')
 		#size=json_load['size']
 		#rating=json_load['rating']
 		#rated_under=json_load['rated_under']
@@ -273,7 +275,7 @@ def buscar_photograpers(request):
 				resultado.append(guardar)
 				i=i+1
 	
-			return JsonResponse(resultado)
+			return JsonResponse(resultado, safe=False)
 		
 		
 		if query==None:
