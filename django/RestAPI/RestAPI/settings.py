@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 CSRF_COOKIE_SECURE = False
+CSRF_FAILURE_VIEW = 'myapp.views.csrf_failure'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
