@@ -86,7 +86,7 @@ def users(request):
             email=email,
             nombre=nombre,
             contrasena=contrasena,
-            token=token
+            token=token,
             return JsonResponse({"id": Clientes.id, "email": Clientes.email}, status=201)
 
         )
@@ -99,7 +99,7 @@ def users(request):
             nombre=nombre,
             contrasena=contrasena,
           
-            token=token
+            token=token,
             return JsonResponse({"id": Fotografo.id, "email": Fotografo.email}, status=201)
 
         )
@@ -111,7 +111,7 @@ def users(request):
             email=email,
             nombre=nombre,
             contrasena=contrasena,
-            token=token
+            token=token,
             return JsonResponse({"id": Agencia.id, "email": Agencia.email}, status=201)
 
         )
