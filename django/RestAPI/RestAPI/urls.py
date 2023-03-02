@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.urls import path
 from pai import views
+from .views import getphographers
+from .views import password
+from .views import users
 
 urlpatterns = [
  #   path('editar', views.editar_perfitl),
