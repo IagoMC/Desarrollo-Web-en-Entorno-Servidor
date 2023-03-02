@@ -76,68 +76,69 @@ else:
 		indice=indice+1
 		
 """
-"""
-def cambiar_contraseña(request):
-	#pillamos los datos del body
-	json_load =json.loads(request.body)
-	#pillamos la contraseña antigua
-	contraseñaAntigua=json_load['contraseñaAntigua']#dentro de los [] metemos el valor en react
-	#pillamos la contraseña nueva
-	ContraseñaNueva=json_load['ContraseñaNueva']
-	#pillamos la repeticion de la contraseña nueva 
-	ContraseñaNueva2=json_load['ContraseñaNueva2']
 
-		# Validamos la contraseña
-	if ContraseñaNueva!=ContraseñaNueva2:
-		return JsonResponse({'error': 'No coinciden'}, status=400)
-	else:
-		#Cogemos el token en la cabecera
-		tokens = json.loads(request.header)
-		if not tokens or tokens != token:
-			return JsonResponse({'error': 'Invalid token'}, status=401)
+def cambiar_contrasena(request):
+	if request.method == "POST":
+		#pillamos los datos del body
+		json_load =json.loads(request.body)
+		#pillamos la contraseña antigua
+		contraseñaAntigua=json_load['contraseñaAntigua'] #dentro de los [] metemos el valor en react
+		#pillamos la contraseña nueva
+		ContraseñaNueva=json_load['ContraseñaNueva']
+		#pillamos la repeticion de la contraseña nueva 
+		ContraseñaNueva2=json_load['ContraseñaNueva2']
 
-		if Clientes.objects.get(token=tokens )!= None:
-			cliente = Clientes.objects.get(token=tokens ) #seleccionamos el cliente con el token
-			if check_password(contraseñaAntigua, cliente.contraseña):#Validamos que la contraseña Antigua es del cliente
+			# Validamos la contraseña
+		if ContraseñaNueva!=ContraseñaNueva2:
+			return JsonResponse({'error': 'No coinciden'}, status=400)
+		else:
+			#Cogemos el token en la cabecera
+			tokens = json.loads(request.header)
+			if not tokens or tokens != token:
+				return JsonResponse({'error': 'Invalid token'}, status=401)
 
-					cliente.contraseña=set_password(ContraseñaNueva) #Cambiamos la contraseña
-					#sentencias para cambiar la contraseña
-					print('contraseña cambiada')
-					cliente.save()
-			else:
-				return JsonResponse({'error': 'old_password incorrecta'}, status=403)
+			if Clientes.objects.get(token=tokens )!= None:
+				cliente = Clientes.objects.get(token=tokens ) #seleccionamos el cliente con el token
+				if check_password(contraseñaAntigua, cliente.contraseña):#Validamos que la contraseña Antigua es del cliente
+
+						cliente.contraseña=set_password(ContraseñaNueva) #Cambiamos la contraseña
+						#sentencias para cambiar la contraseña
+						print('contraseña cambiada')
+						cliente.save()
+				else:
+					return JsonResponse({'error': 'old_password incorrecta'}, status=403)
 
 
-		#Hacemos lo mismo en fotografos y agencias
-		elif Fotografo.objects.get(token=tokens )== None:
-			fotografo = Fotografo.objects.get(token=tokens )
-			if check_password(contraseñaAntigua, fotografo.contraseña):
-					fotografo.contraseña=set_password(ContraseñaNueva)
-					#sentencias para cambiar la contraseña
-					print('contraseña cambiada')
-					fotografo.save()
-			else:
-				return JsonResponse({'error': 'old_password incorrecta'}, status=403)
+			#Hacemos lo mismo en fotografos y agencias
+			elif Fotografo.objects.get(token=tokens )== None:
+				fotografo = Fotografo.objects.get(token=tokens )
+				if check_password(contraseñaAntigua, fotografo.contraseña):
+						fotografo.contraseña=set_password(ContraseñaNueva)
+						#sentencias para cambiar la contraseña
+						print('contraseña cambiada')
+						fotografo.save()
+				else:
+					return JsonResponse({'error': 'old_password incorrecta'}, status=403)
 
-		elif Agencia.objects.get(token=tokens )==None:
-			agencia = Agencia.objects.get(token=tokens )
-			if check_password(contraseñaAntigua, agencia.contraseña):
-					agencia.contraseña=set_password(ContraseñaNueva)
-					#sentencias para cambiar la contraseña
-					print('contraseña cambiada')
-					agencia.save()
-			else:
-				return JsonResponse({'error': 'old_password incorrecta'}, status=403)
+			elif Agencia.objects.get(token=tokens )==None:
+				agencia = Agencia.objects.get(token=tokens )
+				if check_password(contraseñaAntigua, agencia.contraseña):
+						agencia.contraseña=set_password(ContraseñaNueva)
+						#sentencias para cambiar la contraseña
+						print('contraseña cambiada')
+						agencia.save()
+				else:
+					return JsonResponse({'error': 'old_password incorrecta'}, status=403)
 
 
 	
 
 	
-"""
+
 
 
 #################################################		
-
+"""
 def editar_perfitl(reques):
 
 	#cogemos los datos del cuerpo
@@ -247,34 +248,41 @@ def editar_perfitl(reques):
 			agencia.ciudad=editar_ciudad	
 		agencia.save()
 
-
+"""
 def buscar_photograpers(request):
 
-if request.method == "GET":
+	if request.method == "GET":
 	#cogemos los datos del cuerpo
-	query=json['query']
-	size=json['size']
-	rating=json['rating']
-	rated_under=json['rated_under']
+		#json_load=json.loads(request.body)
+		query=request.GET.get["query"]
+		#size=json_load['size']
+		#rating=json_load['rating']
+		#rated_under=json_load['rated_under']
 
 
-	if query!=None :
-		fotografo=Fotografo.objects.filter(
-			(Q(nombre__icontains==query) | Q(descripcion__icontains==query))
-		resultado= []
-		i=1
-		while i< fotografo.count():
-			resultado=({
-				'id':fotografo[i].id,
-				'Nombre': fotografo[i].nombre,
+		if query!=None :
+			fotografo=Fotografo.objects.filter(Q(nombre__icontains=query) | Q(descripcion__icontains=query))
+			resultado = []
+			i=1
+			while i< fotografo.count():
+				guardar={}
+					
+				guardar['id']=fotografo[i].id,
+				guardar['Nombre']= fotografo[i].nombre,
 
-
-			})
-			i=i+1
-
-	return JsonResponse(resultado)
+				resultado.append(guardar)
+				i=i+1
+	
+			return JsonResponse(resultado)
 		
+		
+		if query==None:
+			resultado=[]
+			resultado=({
+				'hola'
+			})
 
+			return JsonResponse(resultado)
 """
 #realizamos varias sentencias para seleccionar la busqueda correcta
 
@@ -381,6 +389,8 @@ if request.method == "GET":
 
 #El funcionamiento es simialr a la funcion anterior
 """
+"""
+
 def buscar_agencies(request):
 	
 	query=json['query']
@@ -483,7 +493,7 @@ def buscar_agencies(request):
 
 
 
-
+"""
 
 #Aarón Saavedra Lagares
 """
