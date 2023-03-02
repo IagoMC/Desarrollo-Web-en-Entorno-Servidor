@@ -1,3 +1,4 @@
+
 from random import randrange
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -256,14 +257,17 @@ def buscar_photograpers(request):
 	if request.method == "GET":
 	#cogemos los datos del cuerpo
 		#json_load=json.loads(request.body)
-		query=request.GET.get('query')
+		query=request.GET.get('query', '')
 		#size=json_load['size']
 		#rating=json_load['rating']
 		#rated_under=json_load['rated_under']
+		print(query)
 
-
-		if query!=None :
-			fotografo=Fotografo.objects.filter(Q(nombre__icontains=query) | Q(descripcion__icontains=query))
+		if query :
+			fotografo=Fotografo.objects.filter(
+				Q(nombre__icontains=query) 
+				| Q(descripcion__icontains=query)
+			)
 			resultado = []
 			i=1
 			while i< fotografo.count():
