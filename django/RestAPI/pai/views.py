@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 import jwt
 import json
-
+import pai.views
 import string
 import random
 from django.contrib.auth import get_user_model
