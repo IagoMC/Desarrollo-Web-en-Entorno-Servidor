@@ -11,6 +11,96 @@ from django.views.decorators.csrf import csrf_exempt
 import jwt
 import json
 
+import string
+import random
+from django.contrib.auth import get_user_model
+from django.views.decorators.http import require_http_methods
+
+
+User = get_user_model()
+
+@require_http_methods(["POST"])
+def users(request):
+    data = request.POST
+    user_type = data.get("type")
+    email = data.get("email")
+    nombre = data.get("nombre")
+    apellido = data.get("apellido", "")
+    usuario = data.get("usuario", "")
+    telefono = telefono.get("phone", "")
+    ciudad = data.get("ciudad", "")
+    contrasena = data.get("contrasena")
+    confirmarContrasena = data.get("confirmarContrasena")
+
+    if contrasena != confirmarContrasena:
+        return JsonResponse(
+            {"error": "Las contraseñas no coinciden."}, status=400
+        )
+
+    if User.objects.filter(email=email).exists():
+        return JsonResponse(
+            {"error": "Ya existe un usuario con ese correo electrónico."}, status=400
+        )
+
+    if user_type not in ["Clientes", "Fotografo", "Agencia"]:
+        return JsonResponse(
+            {"error": "El tipo de usuario no es válido."}, status=400
+        )
+
+    if user_type =="Clientes":
+        # Generar token aleatorio de longitud 6
+        letters = string.ascii_lowercase
+        token = "".join(random.choice(letters) for i in range(6))
+        user = User.objects.create_user(
+            email=email,
+            nombre=nombre,
+            apellido=apellido,
+            usuario=usuario,
+            telefono=telefono,
+            ciudad=ciudad,
+            contrasena=contrasena,        
+            descripcion=None, 
+            token=token
+        )
+    elif user_type =="Fotografo":
+        # Generar token aleatorio de longitud 6
+        letters = string.ascii_lowercase
+        token = "".join(random.choice(letters) for i in range(6))
+        user = User.objects.create_user(
+            email=email,
+            nombre=nombre,
+            apellido=apellido,
+            telefono=telefono,
+            ciudad=ciudad,
+            contrasena=contrasena,
+            fotoPerfil=None,
+            twitter=None,
+            instagram=None,
+            tiktok=None,          
+            descripcion=None, 
+            token=token
+        
+        )
+    else:
+        # Generar token aleatorio de longitud 6
+        letters = string.ascii_lowercase
+        token = "".join(random.choice(letters) for i in range(6))
+        user = User.objects.create_user(
+            email=email,
+            nombre=nombre,
+            telefono=telefono,
+            ciudad=ciudad,
+            contrasena=contrasena,
+            fotoPerfil=None,
+            twitter=None,
+            instagram=None,
+            tiktok=None,          
+            descripcion=None, 
+            token=token
+        
+        )
+
+    return JsonResponse({"id": user.id, "email": user.email}, status=201)
 """
 def home (request):
 	Maximo_fotografos = Fotografo
