@@ -87,7 +87,7 @@ def users(request):
             nombre=nombre,
             contrasena=contrasena,
             token=token,
-            return JsonResponse({"id": Clientes.id, "email": Clientes.email}, status=201)
+            	return JsonResponse({"id": Clientes.id, "email": Clientes.email}, status=201)
 
         )
     elif user_type =="Fotografo":
@@ -100,7 +100,7 @@ def users(request):
             contrasena=contrasena,
           
             token=token,
-            return JsonResponse({"id": Fotografo.id, "email": Fotografo.email}, status=201)
+		return JsonResponse({"id": Fotografo.id, "email": Fotografo.email}, status=201)
 
         )
     else:
@@ -112,7 +112,7 @@ def users(request):
             nombre=nombre,
             contrasena=contrasena,
             token=token,
-            return JsonResponse({"id": Agencia.id, "email": Agencia.email}, status=201)
+            	return JsonResponse({"id": Agencia.id, "email": Agencia.email}, status=201)
 
         )
 
