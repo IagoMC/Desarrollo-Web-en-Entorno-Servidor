@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.urls import path
 from pai import views
-from myapp.views import csrf_failure_view
 
 #from RestAPI.views import csrf_failure
 #from .views import buscar_photograpers
