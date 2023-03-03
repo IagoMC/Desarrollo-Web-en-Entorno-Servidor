@@ -2,7 +2,9 @@
 from random import randrange
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .models import Fotografo, Agencia
+from .models import (Clientes, Fotografo, Agencia)
+
+
 from array import array
 from django.db import models
 #from django.contrib.auth.hashers import hashpw, gensalt
@@ -17,61 +19,62 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.contrib.auth import authenticate
+from rest_framework.decorators import api_view
 
 #Crear Usuario
+import random
+import string
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
-from django.contrib.auth import get_user_model
-
-
-
-User = get_user_model()
-@api_view(['POST'])
+@csrf_exempt
 def create_user(request):
-    user_data = request.data
+    # Obtener los datos del body del request
+    data = json.loads(request.body)
+    user_type = data.get('type')
+    email = data.get('email')
+    nombre = data.get('nombre')
+    contrasena = data.get('contrasena')
+    CContrasena = data.get('CContrasena')
 
-    # Validar que todos los campos requeridos estén presentes
-    required_fields = ('type', 'email', 'name', 'password', 'passwordConfirm')
-    if not all(field in user_data for field in required_fields):
-        return Response({'error': 'Todos los campos son obligatorios'}, status=status.HTTP_400_BAD_REQUEST)
+    # Validar que los datos del request sean válidos
+    if not user_type or not email or not nombre or not contrasena or not CContrasena:
+        return JsonResponse({'error': 'Faltan datos en el request'}, status=400)
+    if contrasena != CContrasena:
+        return JsonResponse({'error': 'Las contraseñas no coinciden'}, status=400)
 
-    # Validar que el tipo de usuario sea válido
-    user_type = user_data['type']
-    valid_types = [choice[0] for choice in User.USER_TYPE_CHOICES]
-    if user_type not in valid_types:
-        return Response({'error': 'Tipo de usuario no válido'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Validar que las contraseñas coincidan
-    password = user_data['password']
-    password_confirm = user_data['passwordConfirm']
-    if password != password_confirm:
-        return Response({'error': 'Las contraseñas no coinciden'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Crear el nuevo usuario
     try:
+        token = ''.join(random.choices(string.ascii_letters, k=6))
+
+        # Insertar el nuevo usuario en la base de datos
         if user_type == 'Clientes':
-            user = User.objects.create_Clientes(
-             	email=user_data['email'],
-                password=password['contrasena'],
-                name=user_data['nombre'],
+            Cliente = Clientes.objects.create(
+                email=email,
+                contrasena=contrasena,
+                name=nombre,
+                token=token
             )
-        elif user_type == 'photographer':
-            user = User.objects.create_photographer(
-                email=user_data['email'],
-                password=password['contrasena'],
-                name=user_data['nombre'],
-                
+            return JsonResponse({'success': 'Cliente creado correctamente', 'token': token}, status=201)
+        elif user_type == 'Fotografo':
+            Fotografo = Fotografo.objects.create(
+                email=email,
+                contrasena=contrasena,
+                name=nombre,
+                token=token
             )
-        elif user_type == 'agency':
-            user = User.objects.create_agency(
-                email=user_data['email'],
-                password=password['contrasena'],
-                name=user_data['nombre'],
+            return JsonResponse({'success': 'Fotografo creado correctamente', 'token': token}, status=201)
+        elif user_type == 'Agencia':
+            Agencia = Agencia.objects.create(
+                email=email,
+                contrasena=contrasena,
+                name=nombre,
+                token=token
             )
+            return JsonResponse({'success': 'Agencia creada correctamente', 'token': token}, status=201)
         else:
-            return Response({'error': 'Tipo de usuario no válido'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'success': 'Usuario creado correctamente'}, status=status.HTTP_201_CREATED)
+            return JsonResponse({'error': 'Tipo de usuario no válido'}, status=400)
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'error': str(e)}, status=400)
     
 	
 """
