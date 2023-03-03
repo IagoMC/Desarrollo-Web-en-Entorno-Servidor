@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.db import models
 from .models import (Clientes, Fotografo, Agencia)
+from django.views.decorators.csrf import csrf_failure
 
 """
 from array import array
