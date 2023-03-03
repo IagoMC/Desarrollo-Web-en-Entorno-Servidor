@@ -17,7 +17,6 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.contrib.auth import authenticate
-from rest_framework.decorators import api_view
 
 #Crear Usuario
 from rest_framework import status
