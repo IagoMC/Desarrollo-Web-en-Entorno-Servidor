@@ -2,9 +2,10 @@
 from random import randrange
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.db import models
 from .models import (Clientes, Fotografo, Agencia)
 
-
+"""
 from array import array
 from django.db import models
 #from django.contrib.auth.hashers import hashpw, gensalt
@@ -25,7 +26,7 @@ import random
 import string
 from django.http import JsonResponse
 #from django.views.decorators.csrf import csrf_exempt
-
+"""
 """
 @csrf_exempt
 def create_user(request):
