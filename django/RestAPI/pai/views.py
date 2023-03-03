@@ -5,6 +5,11 @@ from django.http import HttpResponse, JsonResponse
 from django.db import models
 from .models import (Clientes, Fotografo, Agencia)
 from django.views.decorators.csrf import csrf_failure
+from django.db.models import Avg, Q
+from django.contrib.auth import get_user_model
+from django.views.decorators.http import require_http_methods
+from django.conf import settings
+from django.contrib.auth import authenticate
 
 """
 from array import array
