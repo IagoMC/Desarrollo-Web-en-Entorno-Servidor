@@ -19,103 +19,64 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
 
-
-@api_view(['POST'])
-def login(request):
-    email = request.data.get('email')
-    contrasena = request.data.get('contrasena')
-    user = authenticate(request, email=email, password=password)
-    if user is not None:
-      
-        session_token = user.get_session_auth_hash()
-        return JsonResponse({'session_token': session_token}, status=201)
-    else:
-        
-        return JsonResponse({'error': 'Invalid email or password'}, status=401)
+#Crear Usuario
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth import get_user_model
 
 
 
-
-
-
-csrf_failure_view = settings.CSRF_FAILURE_VIEW
 User = get_user_model()
+@api_view(['POST'])
+def create_user(request):
+    user_data = request.data
 
-@require_http_methods(["POST"])
-def users(request):
-    data = request.POST
-    user_type = data.get("type")
-    email = data.get("email")
-    nombre = data.get("nombre")
-    apellido = data.get("apellido", "")
-    usuario = data.get("usuario", "")
-    telefono = telefono.get("phone", "")
-    ciudad = data.get("ciudad", "")
-    contrasena = data.get("contrasena")
-    confirmarContrasena = data.get("confirmarContrasena")
+    # Validar que todos los campos requeridos estén presentes
+    required_fields = ('type', 'email', 'name', 'password', 'passwordConfirm')
+    if not all(field in user_data for field in required_fields):
+        return Response({'error': 'Todos los campos son obligatorios'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if contrasena != confirmarContrasena:
-        return JsonResponse(
-            {"error": "Las contraseñas no coinciden."}, status=400
-        )
+    # Validar que el tipo de usuario sea válido
+    user_type = user_data['type']
+    valid_types = [choice[0] for choice in User.USER_TYPE_CHOICES]
+    if user_type not in valid_types:
+        return Response({'error': 'Tipo de usuario no válido'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if Clientes.objects.filter(email=email).exists():
-        return JsonResponse(
-            {"error": "Ya existe un usuario con ese correo electrónico."}, status=400
-        )
+    # Validar que las contraseñas coincidan
+    password = user_data['password']
+    password_confirm = user_data['passwordConfirm']
+    if password != password_confirm:
+        return Response({'error': 'Las contraseñas no coinciden'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if Agencia.objects.filter(email=email).exists():
-        return JsonResponse(
-            {"error": "Ya existe un usuario con ese correo electrónico."}, status=400
-        )
-    if Fotografo.objects.filter(email=email).exists():
-        return JsonResponse(
-            {"error": "Ya existe un usuario con ese correo electrónico."}, status=400
-        )
-
-    if user_type not in ["Clientes", "Fotografo", "Agencia"]:
-        return JsonResponse(
-            {"error": "El tipo de usuario no es válido."}, status=400
-        )
-
-    if user_type =="Clientes":
-        # Generar token aleatorio de longitud 6
-        letters = string.ascii_lowercase
-        token = "".join(random.choice(letters) for i in range(6))
-        user = Clientes.objects.create_user(
-            email=email,
-            nombre=nombre,
-            contrasena=contrasena,
-            token=token,
-            	return JsonResponse({"id": Clientes.id, "email": Clientes.email}, status=201)
-
-        )
-    elif user_type =="Fotografo":
-        # Generar token aleatorio de longitud 6
-        letters = string.ascii_lowercase
-        token = "".join(random.choice(letters) for i in range(6))
-        user = Fotografo.objects.create_user(
-            email=email,
-            nombre=nombre,
-            contrasena=contrasena,
-          
-            token=token,
-		return JsonResponse({"id": Fotografo.id, "email": Fotografo.email}, status=201)
-
-        )
-    else:
-        # Generar token aleatorio de longitud 6
-        letters = string.ascii_lowercase
-        token = "".join(random.choice(letters) for i in range(6))
-        user = Agencia.objects.create_user(
-            email=email,
-            nombre=nombre,
-            contrasena=contrasena,
-            token=token,
-            	return JsonResponse({"id": Agencia.id, "email": Agencia.email}, status=201)
-
-        )
-
+    # Crear el nuevo usuario
+    try:
+        if user_type == 'Clientes':
+            user = User.objects.create_Clientes(
+             	email=user_data['email'],
+                password=password['contrasena'],
+                name=user_data['nombre'],
+            )
+        elif user_type == 'photographer':
+            user = User.objects.create_photographer(
+                email=user_data['email'],
+                password=password['contrasena'],
+                name=user_data['nombre'],
+                
+            )
+        elif user_type == 'agency':
+            user = User.objects.create_agency(
+                email=user_data['email'],
+                password=password['contrasena'],
+                name=user_data['nombre'],
+            )
+        else:
+            return Response({'error': 'Tipo de usuario no válido'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'success': 'Usuario creado correctamente'}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+	
 """
 def home (request):
 	Maximo_fotografos = Fotografo
@@ -124,7 +85,6 @@ def home (request):
 	AleatorioFotografo = randrange(1, Maximo_fotografos,1)
 	AleatorioAgencia = randrange(1, Maximo_agencias,1)
 	
-
 	# Carrusel
 	aleatorio = randrange(1,2,1)
 	
@@ -134,12 +94,9 @@ def home (request):
 	else:
         a=1
     		#Metemos imagen y descripcion
-
 	#
-
 	
 Filas = [[0, 0, 0,0,0,0], [0,0]]
-
 numero=0
 fuera=0
 foto=0
@@ -147,7 +104,6 @@ i=0
 indice=0
 Agencia=0
 aleatorio = randrange(1,2,1)
-
 if aleatorio ==1:
 	while foto<6:
 		AleatorioFotografo=randrange(1,Maximo_fotografos,1)
@@ -157,12 +113,10 @@ if aleatorio ==1:
 						fuera=1
 					else:
 						numero=numero+1
-
 		if numero==6:
 			Filas(indice,1)==AleatorioFotografo
 			Filas(indice,2)==1#Descripcion 
 			foto=foto+1
-
 		indice=indice+1
 else:
 	while Agencia<6:
@@ -173,12 +127,10 @@ else:
 						fuera=1
 					else:
 						numero=numero+1
-
 		if numero==6:
 			Filas(indice,1)==AleatorioAgencia
 			Filas(indice,2)==1#Descripcion 
 			foto=foto+1
-
 		indice=indice+1
 		
 """
@@ -216,7 +168,6 @@ def cambiar_contrasena(request):
 					return JsonResponse({'error': 'contraseña incorrecta'}, status=403)
 
 """
-
 			#Hacemos lo mismo en fotografos y agencias
 			elif Fotografo.objects.get(token=tokens )== None:
 				fotografo = Fotografo.objects.get(token=tokens )
@@ -227,7 +178,6 @@ def cambiar_contrasena(request):
 						fotografo.save()
 				else:
 					return JsonResponse({'error': 'old_password incorrecta'}, status=403)
-
 			elif Agencia.objects.get(token=tokens )==None:
 				agencia = Agencia.objects.get(token=tokens )
 				if check_password(contraseñaAntigua, agencia.contraseña):
@@ -237,38 +187,27 @@ def cambiar_contrasena(request):
 						agencia.save()
 				else:
 					return JsonResponse({'error': 'old_password incorrecta'}, status=403)
-
-
 	
-
 	
-
-
 """
 #################################################		
 """
 def editar_perfitl(reques):
-
 	#cogemos los datos del cuerpo
 	cuerpo =json.loads(request.body)
-
 	#cogemos el token de la cabecera
 	tokens = json.loads(request.header)
 	if not tokens or tokens != token:
 		return JsonResponse({'error': 'Invalid token'}, status=401)
-
 	#Cogemos el cliente con el token
 	cliente = Clientes.objects.get(token=tokens )
 	#Cogemos el fotografo con el token
 	fotografo = Fotografo.objects.get(token=tokens )
 	#Cogemos el agencia con el token
 	agencia= Agencia.objects.get(token=tokens )
-
-
 	
 #Preguntamos si el cliente esta vacio 
 	if cliente!=None:
-
 		#Pillamos lod datos del cuerpo
 		editar_NombreUsuario=json['nombreUsuario']
 		editar_Descripcion=json['Descripcion']
@@ -276,7 +215,6 @@ def editar_perfitl(reques):
 		editar_usuario=json['usuario']
 		editar_correo=json['correo']
 		editar_fotoperfil=json['fotoPerfil']
-
 		#Modificamos los datos si no estan vacios, es decir si no se van a modificar
 		if editar_NombreUsuario!="":
 			cliente.nombre = editar_NombreUsuario #modificamos los datos
@@ -291,8 +229,6 @@ def editar_perfitl(reques):
 		if editar_fotoperfil!="":
 			cliente.fotoperfil= editar_fotoperfil
 		cliente.save()
-
-
 #Igual que para agencia y fotografo
 	elif fotografo!=None:
 		editar_NombreUsuario=json['nombreUsuario']
@@ -355,7 +291,6 @@ def editar_perfitl(reques):
 		if editar_ciudad!="":
 			agencia.ciudad=editar_ciudad	
 		agencia.save()
-
 """
 def buscar_photograpers(request):
 
@@ -396,14 +331,12 @@ def buscar_photograpers(request):
 			return JsonResponse(resultado)
 """
 #realizamos varias sentencias para seleccionar la busqueda correcta
-
 # si query no esta vacio y rating esta vacio realziamos esta busqueda
 	if query!="" and rating=="":
 			i=1
 			#cogemos todos los datos de fotografo quye cumplen con las siguientes sentencias
 			fotografo = Fotografo.objects.get(Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query) )
 			resultado = []
-
 			#coge ln numero de fotografos que indica el size
 			while i< len(fotografo) and i<size:
 				resultado= ({
@@ -412,17 +345,14 @@ def buscar_photograpers(request):
 								'FotoPerfil': fotografo[i].fotoperfil,
 						}	)
 				i=i+1
-
 				media=0
 		
 # si query no esta vacio y rating no esta vacio realziamos esta busqueda	
 	if query!="" and rating!="":
 			#cogemos todos los datos de fotografo quye cumplen con las siguientes sentencias
-
 			fotografo = Fotografo.objects.filter(Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query) )
 			i=1
 			imedia=0
-
 			resultado = []
 			#tambien pillamos la media de cada fotografo
 			while i< len(fotografo) and imedia<size:
@@ -434,19 +364,16 @@ def buscar_photograpers(request):
 				#si el rating es el mismo que la media se muestra los siguientes datos
 				if rating==media:
 					imedia=imedia+1
-
 					resultado.append({
 								'id': fotografo[i].id,
 								'Nombre': fotografo[i].nombre,
 								'FotoPerfil': fotografo[i].fotoperfil,
-
 							}	)
 					num_comentarios=0
 					suma_valoracion=0
 					media=0		
 					
 					i=i+1
-
 #si query esta vacio y rating no, realiza la siguiente busqueda
 	if query=="" and rating!="":
 			fotografo = Fotografo.objects.all()
@@ -459,7 +386,6 @@ def buscar_photograpers(request):
 					num_comentarios += 1
 					suma_valoracion += Comentariofotografo.valoracion
 				media = suma_valoracion / num_comentarios
-
 				#si el rating es el mismo que la media se muestra los siguientes datos
 				if rating==media:
 					imedia=imedia+1
@@ -467,15 +393,12 @@ def buscar_photograpers(request):
 								'id': fotografo[i].id,
 								'Nombre': fotografo[i].nombre,
 								'FotoPerfil': fotografo[i].fotoperfil,
-
 							}	)
 					num_comentarios=0
 					suma_valoracion=0
 					media=0		
 					
 					i=i+1
-
-
 #si query esta vacio y rating tambien, realizamos la siguiente busqueda. Selecciona por orden, no tiene filtro
 	if query=="" and rating=="":
 			fotografo = Fotografo.objects.all()
@@ -483,46 +406,35 @@ def buscar_photograpers(request):
 			resultado = []
 			while i< len(fotografo) and i<size:
 				
-
 				resultado.append({
 								'id': fotografo[i].id,
 								'Nombre': fotografo[i].nombre,
-
 								'FotoPerfil': fotografo[i].fotoperfil,
 	
-
 							}	)
-
 				media=0		
 					
 				i=i+1			
-
-
 #El funcionamiento es simialr a la funcion anterior
 """
 """
-
 def buscar_agencies(request):
 	
 	query=json['query']
 	size=json['size']
 	rating=json['rating']
 	rated_under=json['rated_under']
-
 	if query!="" and rating=="":
 			i=1
 			agencia = Agencia.objects.get(Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query) )
 			resultado = []
-
 			while i< len(agencia) and i<size:
 				
-
 				resultado= ({
 								'id': agencia[i].id,
 								'Nombre': agencia[i].nombre,
 			
 								'FotoPerfil': agencia[i].fotoperfil,
-
 						}	)
 				i=i+1
 			
@@ -538,23 +450,19 @@ def buscar_agencies(request):
 					num_comentarios += 1
 					suma_valoracion += Comentarioagencia.valoracion
 				media = suma_valoracion / num_comentarios
-
 				if rating==media:
 					imedia=imedia+1
-
 					resultado.append({
 								'id': agencia[i].id,
 								'Nombre': agencia[i].nombre,
 							
 								'FotoPerfil': agencia[i].fotoperfil,
-
 							}	)
 				num_comentarios=0
 				suma_valoracion=0
 				media=0		
 					
 				i=i+1
-
 	if query=="" and rating!="":
 			agencia = Agencias.objects.all()
 			i=1
@@ -566,44 +474,31 @@ def buscar_agencies(request):
 					num_comentarios += 1
 					suma_valoracion += Comentarioagencia.valoracion
 				media = suma_valoracion / num_comentarios
-
 				if rating==media:
 					imedia=imedia+1
-
 					resultado.append({
 								'id': agencia[i].id,
 								'Nombre': agencia[i].nombre,
 								'FotoPerfil': agencia[i].fotoperfil,
-
-
 							}	)
 				num_comentarios=0
 				suma_valoracion=0
 				media=0		
 					
 				i=i+1
-
 	if query=="" and rating=="":
 			agencia = Agencias.objects.all()
 			i=1
 			resultado = []
 			while i< len(agencia) and i<size:
 				
-
 				resultado.append({
 								'id': agencia[i].id,
 								'Nombre': agencia[i].nombre,
-
 								'FotoPerfil': agencia[i].fotoperfil,
-
 							}	)
-
 					
 				i=i+1			
-
-
-
-
 """
 
 #Aarón Saavedra Lagares
@@ -631,7 +526,6 @@ def photographer (request):
                 'averageRaiting' : fotografo.averageRaiting
             }
     return JsonResponse (resultado, json_dumps_params={'ensurce_ascii': False})
-
 @csfr_exempt
 def agencia (request):
     if request.method == 'GET':
@@ -656,77 +550,52 @@ def agencia (request):
                 'averageRaiting' : agencia.averageRaiting
             }
     return JsonResponse (resultado, json_dumps_params={'ensurce_ascii': False})
-
 @csfr_exempt
-
 # Para utilizar Flask, primero debes instalarlo en tu entorno de desarrollo. Puedes hacerlo utilizando el gestor de paquetes de Python, pip, con el siguiente comando:
 # pip install Flask
 app = Flask(id)
-
 Comentariofotografo = {
     1: {'comments': [], 'ratings': []},
     2: {'comments': [], 'ratings': []}
 }
-
 @app.route('/Comentariofotografo/<int:id>/comments', methods=['POST'])
 def add_comment_and_rating(id):
     if id not in Comentariofotografo:
         return jsonify({'message': 'Fotografo no encontrado'}), 404
-
     if 'SessionToken' not in request.headers:
         return jsonify({'message': 'No estas autorizado'}), 401
-
     if 'SessionToken' != request.headers['SessionToken']:
         return jsonify({'message': 'No estas autorizado'}), 401
-
     comment = request.json.get('new_comment')
     rating = request.json.get('new_rating')
-
     if not comment or not rating:
         return jsonify({'message': 'Bad Request'}), 400
-
     Comentariofotografo[id]['comentario'].append(comment)
     Comentariofotografo[id]['valoracion'].append(rating)
-
     return jsonify({'message': 'Comentario y valoración añadidas correctamente'}), 201
-
 if id == '__main__':
     app.run()
-
 @csfr_exempt
-
 app = Flask(id)
-
 Comentarioagencia = {
     1: {'comments': [], 'ratings': []},
     2: {'comments': [], 'ratings': []}
 }
-
 @app.route('/Agencia/<int:id>/comments', methods=['POST'])
 def add_comment_and_rating(id):
     if id not in Comentarioagencia:
         return jsonify({'message': 'Agencia no encontrado'}), 404
-
     if 'SessionToken' not in request.headers:
         return jsonify({'message': 'No estas autorizado'}), 401
-
     if 'SessionToken' != request.headers['SessionToken']:
         return jsonify({'message': 'No estas autorizado'}), 401
-
     comment = request.json.get('new_comment')
     rating = request.json.get('new_rating')
-
     if not comment or not rating:
         return jsonify({'message': 'Bad Request'}), 400
-
     Comentarioagencia[id]['comentario'].append(comment)
     Comentarioagencia[id]['valoracion'].append(rating)
-
     return jsonify({'message': 'Comentario y valoración añadidas correctamente'}), 201
-
 if id == '__main__':
     app.run()
-
-
-
 """
