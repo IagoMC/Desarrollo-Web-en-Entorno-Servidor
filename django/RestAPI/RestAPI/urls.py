@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from pai import views
+from RestAPI.views import csrf_failure
 #from .views import getphographers
 #from RestAPI.views import password
 #from RestAPI.views import users
