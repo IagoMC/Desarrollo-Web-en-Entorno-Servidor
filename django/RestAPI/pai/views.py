@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.db import models
 from .models import (Clientes, Fotografo, Agencia)
-from django.views.decorators.csrf import csrf_exempt
+#from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg, Q
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
@@ -302,7 +302,7 @@ def editar_perfitl(reques):
 		agencia.save()
 """
 
-@csrf_exempt
+#@csrf_exempt
 def buscar_photograpers(request):
 
 	if request.method == "GET":
