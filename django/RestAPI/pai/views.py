@@ -32,11 +32,7 @@ import random
 import string
 from django.http import JsonResponse
 #from django.views.decorators.csrf import csrf_exempt
-"""
 
-@csrf_exempt
-
-"""
 def create_user(request):
     # Obtener los datos del body del request
     data = json.loads(request.body)
@@ -305,6 +301,8 @@ def editar_perfitl(reques):
 			agencia.ciudad=editar_ciudad	
 		agencia.save()
 """
+
+@csrf_exempt
 def buscar_photograpers(request):
 
 	if request.method == "GET":
