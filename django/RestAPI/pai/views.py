@@ -9,7 +9,7 @@ from array import array
 from django.db import models
 #from django.contrib.auth.hashers import hashpw, gensalt
 from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
+#from django.views.decorators.csrf import csrf_exempt
 import jwt
 import json
 import pai.views
@@ -24,8 +24,9 @@ from django.contrib.auth import authenticate
 import random
 import string
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+#from django.views.decorators.csrf import csrf_exempt
 
+"""
 @csrf_exempt
 def create_user(request):
     # Obtener los datos del body del request
@@ -76,6 +77,7 @@ def create_user(request):
         return JsonResponse({'error': str(e)}, status=400)
     
 	
+"""
 """
 def home (request):
 	Maximo_fotografos = Fotografo
@@ -133,6 +135,8 @@ else:
 		indice=indice+1
 		
 """
+
+"""
 @csrf_exempt
 def cambiar_contrasena(request):
 	if request.method == "POST":
@@ -166,6 +170,7 @@ def cambiar_contrasena(request):
 				else:
 					return JsonResponse({'error': 'contraseña incorrecta'}, status=403)
 
+"""
 """
 			#Hacemos lo mismo en fotografos y agencias
 			elif Fotografo.objects.get(token=tokens )== None:
