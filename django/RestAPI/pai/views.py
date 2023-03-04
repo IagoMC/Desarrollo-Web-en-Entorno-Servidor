@@ -21,61 +21,61 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET
 
 @require_GET
-def get_photographers(request):
+def buscar_photograpers(request):
     query = request.GET.get("query")
     rating = request.GET.get("rating")
     size = request.GET.get("size")
     rated_under = request.GET.get("rated_under")
 
-    photographers = Photographer.objects.all()
+    fotografo = Fotografo.objects.all()
 
     # Filter by query
     if query:
         query = query.lower()
-        photographers = photographers.filter(
-            Q(name__icontains=query) | Q(description__icontains=query) | Q(city__icontains=query)
+        fotografo = fotografo.filter(
+            Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
-
+"""
     # Filter by rating
     if rating:
-        photographers = photographers.annotate(average_rating=Avg("comments__rating")).filter(
+        fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).filter(
             average_rating__gte=float(rating)
         )
 
     # Filter by rated under
     if rated_under:
-        rated_under_photographer = get_object_or_404(Photographer, pk=rated_under)
-        photographers = photographers.filter(
-            comments__photographer=rated_under_photographer
-        ).exclude(pk=rated_under_photographer.pk)
+        rated_under_fotografo = get_object_or_404(Fotografo, pk=rated_under)
+        fotografo = fotografo.filter(
+            comments__fotografo=rated_under_fotografo
+        ).exclude(pk=rated_under_fotografo.pk)
 
     # Sort by average rating (from highest to lowest)
-    photographers = photographers.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
+    fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
 
     # Pagination
     if size:
-        paginator = Paginator(photographers, int(size))
+        paginator = Paginator(fotografo, int(size))
         page_number = request.GET.get("page")
         page = paginator.get_page(page_number)
-        photographers = page.object_list
+        fotografo = page.object_list
+"""
+		data = []
+		for fotografo in fotografo:
+			data.append(
+				{
+					"id": fotografo.id,
+					"name": fotografo.nombre,
+					"description": fotografo.descripcion,
+					"phone": fotografo.telefono,
+					#"instagram": fotografo.instagram,
+					#"twitter": fotografo.twitter,
+					#"tiktok": fotografo.tiktok,
+					#"photo": fotografo.photo.url if fotografo.photo else None,
+				# "averageRating": fotografo.comments.all().aggregate(Avg("rating"))["rating__avg"],
+				}
+			)
 
-    data = []
-    for photographer in photographers:
-        data.append(
-            {
-                "id": photographer.id,
-                "name": photographer.name,
-                "description": photographer.description,
-                "phone": photographer.phone,
-                "instagram": photographer.instagram,
-                "twitter": photographer.twitter,
-                "tiktok": photographer.tiktok,
-                "photo": photographer.photo.url if photographer.photo else None,
-                "averageRating": photographer.comments.all().aggregate(Avg("rating"))["rating__avg"],
-            }
-        )
-
-    return JsonResponse(data, safe=False)
+		return JsonResponse(data, safe=False)
 
 		
 @csrf_exempt
