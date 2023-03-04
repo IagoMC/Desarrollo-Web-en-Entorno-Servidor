@@ -15,6 +15,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+
 
 
 def buscar_photograpers(request):
@@ -134,10 +138,19 @@ def login(request):
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+
+@csrf_exempt
+@login_required
 def acomentarios(request, id):
     if request.method == "POST":
         try:
             photographer = get_object_or_404(Photographer, pk=id)
+            data = {
+                'id': photographer.id,
+                'name': photographer.name,
+                'location': photographer.location,
+                'bio': photographer.bio
+            }
             comment_text = request.POST.get("new_comment")
             rating = request.POST.get("new_rating")
             
@@ -149,7 +162,11 @@ def acomentarios(request, id):
                 return JsonResponse({"error": "La valoración debe ser un número entre 1 y 5"}, status=400)
 
             comment = Comment.objects.create(photographer=photographer, user=request.user, text=comment_text, rating=rating)
-            return JsonResponse({"success": "Comentario publicado con éxito"}, status=201)
+            response_data = {
+                "photographer": data,
+                "success": "Comentario publicado con éxito"
+            }
+            return JsonResponse(response_data, status=201)
 
         except Photographer.DoesNotExist:
             return JsonResponse({"error": "Fotógrafo no encontrado"}, status=404)
