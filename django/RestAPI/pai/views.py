@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.db import models
-from .models import (Clientes, Fotografo, Agencia)
+from ./.models import (Clientes, Fotografo, Agencia)
 #from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg, Q
 from django.contrib.auth import get_user_model
