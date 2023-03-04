@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.contrib.auth import authenticate
-from django.views.decorators.csrf import csrf_exempt
+#from django.views.decorators.csrf import csrf_exempt
 
 """
 from array import array
@@ -304,7 +304,7 @@ def editar_perfitl(reques):
 		agencia.save()
 """
 
-@csrf_exempt
+#@csrf_exempt
 def buscar_photograpers(request):
 
 	if request.method == "GET":
