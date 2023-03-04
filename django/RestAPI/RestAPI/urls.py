@@ -8,6 +8,7 @@ urlpatterns = [
  #   path('editar', views.editar_perfitl),
    # path('password', views.cambiar_contrasena),
     path('getphographers', views.buscar_photograpers),
+    path('registrarse', views.ruser)
 #    path('user',views.create_user),
 #    path('getagencies', views.buscar_agencies),
    # path('photographer', views.photograpers),
