@@ -56,7 +56,6 @@ def buscar_photograpers(request):
 			return JsonResponse(resultado)
 		
 		
-
 @csrf_exempt
 def ruser(request):
     if request.method == 'POST':
@@ -79,33 +78,30 @@ def ruser(request):
         email = body['email']
         nombre = body['name']
         contraseña = body['password']
-			if tipo_usuario=="Agencia":
-				try:
-					usuario = Agencia.objects.create_user(email, email, contraseña)
-					usuario.profile.nombre = nombre
-					usuario.save()
-					return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
-				except:
-					return JsonResponse({'error': 'No se pudo crear la Agencia'}, status=500)		
-			
-			if tipo_usuario=="Clientes":
-				try:
-					usuario = Clientes.objects.create_user(email, email, contraseña)
-					usuario.profile.nombre = nombre
-					usuario.save()
-					return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
-				except:
-					return JsonResponse({'error': 'No se pudo crear el Cliente'}, status=500)		
-			
-			if tipo_usuario=="Fotografo":
-				try:
-					usuario = Fotografo.objects.create_user(email, email, contraseña)
-					usuario.profile.nombre = nombre
-					usuario.save()
-					return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
-				except:
-					return JsonResponse({'error': 'No se pudo crear el Fotografo'}, status=500)		
-
+        if tipo_usuario=="Agencia":
+            try:
+                usuario = Agencia.objects.create_user(email, email, contraseña)
+                usuario.profile.nombre = nombre
+                usuario.save()
+                return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
+            except:
+                return JsonResponse({'error': 'No se pudo crear la Agencia'}, status=500)
+        if tipo_usuario=="Clientes":
+            try:
+                usuario = Clientes.objects.create_user(email, email, contraseña)
+                usuario.profile.nombre = nombre
+                usuario.save()
+                return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
+            except:
+                return JsonResponse({'error': 'No se pudo crear el Cliente'}, status=500)
+        if tipo_usuario=="Fotografo":
+            try:
+                usuario = Fotografo.objects.create_user(email, email, contraseña)
+                usuario.profile.nombre = nombre
+                usuario.save()
+                return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
+            except:
+                return JsonResponse({'error': 'No se pudo crear el Fotografo'}, status=500)
 
 
 
