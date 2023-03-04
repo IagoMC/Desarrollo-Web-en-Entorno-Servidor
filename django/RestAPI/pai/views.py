@@ -15,6 +15,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
+
+
 def buscar_photograpers(request):
 
 	if request.method == "GET":
@@ -52,6 +54,39 @@ def buscar_photograpers(request):
 			})
 
 			return JsonResponse(resultado)
+		
+		
+
+@csrf_exempt
+def ruser(request):
+    if request.method == 'POST':
+        # parsear el cuerpo de la solicitud
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        
+        # validar campos requeridos
+        campos_requeridos = ['type', 'email', 'name', 'password', 'passwordConfirm']
+        for campo in campos_requeridos:
+            if campo not in body:
+                return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
+        
+        # validar que los campos de contraseña coincidan
+        if body['password'] != body['passwordConfirm']:
+            return JsonResponse({'error': 'Los campos de contraseña no coinciden'}, status=400)
+        
+        # crear usuario
+        tipo_usuario = body['type']
+        email = body['email']
+        nombre = body['name']
+        contraseña = body['password']
+        try:
+            usuario = User.objects.create_user(email, email, contraseña)
+            usuario.profile.tipo_usuario = tipo_usuario
+            usuario.profile.nombre = nombre
+            usuario.save()
+            return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
+        except:
+            return JsonResponse({'error': 'No se pudo crear el usuario'}, status=500)		
 """
 from array import array
 from django.db import models
