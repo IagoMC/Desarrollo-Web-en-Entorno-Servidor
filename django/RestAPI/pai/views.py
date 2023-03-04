@@ -18,47 +18,65 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_GET
 
+@require_GET
+def get_photographers(request):
+    query = request.GET.get("query")
+    rating = request.GET.get("rating")
+    size = request.GET.get("size")
+    rated_under = request.GET.get("rated_under")
 
+    photographers = Photographer.objects.all()
 
-def buscar_photograpers(request):
+    # Filter by query
+    if query:
+        query = query.lower()
+        photographers = photographers.filter(
+            Q(name__icontains=query) | Q(description__icontains=query) | Q(city__icontains=query)
+        )
 
-	if request.method == "GET":
-	#cogemos los datos del cuerpo
-		#json_load=json.loads(request.body)
-		query=request.GET.get('query', '')
-		#size=json_load['size']
-		#rating=json_load['rating']
-		#rated_under=json_load['rated_under']
-		print(query)
+    # Filter by rating
+    if rating:
+        photographers = photographers.annotate(average_rating=Avg("comments__rating")).filter(
+            average_rating__gte=float(rating)
+        )
 
-		if query :
-			fotografo=Fotografo.objects.filter(
-				Q(nombre__icontains=query) 
-				| Q(descripcion__icontains=query)
-			)
-			resultado = []
-			i=1
-			while i< fotografo.count():
-				guardar={}
-					
-				guardar['id']=fotografo[i].id,
-				guardar['Nombre']= fotografo[i].nombre,
+    # Filter by rated under
+    if rated_under:
+        rated_under_photographer = get_object_or_404(Photographer, pk=rated_under)
+        photographers = photographers.filter(
+            comments__photographer=rated_under_photographer
+        ).exclude(pk=rated_under_photographer.pk)
 
-				resultado.append(guardar)
-				i=i+1
-	
-			return JsonResponse(resultado, safe=False)
-		
-		
-		if query==None:
-			resultado=[]
-			resultado=({
-				'hola'
-			})
+    # Sort by average rating (from highest to lowest)
+    photographers = photographers.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
 
-			return JsonResponse(resultado)
-		
+    # Pagination
+    if size:
+        paginator = Paginator(photographers, int(size))
+        page_number = request.GET.get("page")
+        page = paginator.get_page(page_number)
+        photographers = page.object_list
+
+    data = []
+    for photographer in photographers:
+        data.append(
+            {
+                "id": photographer.id,
+                "name": photographer.name,
+                "description": photographer.description,
+                "phone": photographer.phone,
+                "instagram": photographer.instagram,
+                "twitter": photographer.twitter,
+                "tiktok": photographer.tiktok,
+                "photo": photographer.photo.url if photographer.photo else None,
+                "averageRating": photographer.comments.all().aggregate(Avg("rating"))["rating__avg"],
+            }
+        )
+
+    return JsonResponse(data, safe=False)
+
 		
 @csrf_exempt
 def ruser(request):
