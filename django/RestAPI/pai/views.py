@@ -15,7 +15,6 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
-from django.contrib.auth import authenticate, login
 
 
 def buscar_photograpers(request):
@@ -65,23 +64,23 @@ def ruser(request):
         body = json.loads(body_unicode)
         
         # validar campos requeridos
-        campos_requeridos = ['type', 'email', 'name', 'password', 'passwordConfirm']
+        campos_requeridos = ['type', 'email', 'nombre', 'contrasena', 'ccontrasena']
         for campo in campos_requeridos:
             if campo not in body:
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
         
         # validar que los campos de contraseña coincidan
-        if body['password'] != body['passwordConfirm']:
+        if body['contrasena'] != body['ccontrasena']:
             return JsonResponse({'error': 'Los campos de contraseña no coinciden'}, status=400)
         
         # crear usuario
         tipo_usuario = body['type']
         email = body['email']
-        nombre = body['name']
-        contraseña = body['password']
+        nombre = body['nombre']
+        contrasena = body['contrasena']
         if tipo_usuario=="Agencia":
             try:
-                usuario = Agencia.objects.create_user(email, email, contraseña)
+                usuario = Agencia.objects.create_user(email, email, contrasena)
                 usuario.profile.nombre = nombre
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
@@ -89,7 +88,7 @@ def ruser(request):
                 return JsonResponse({'error': 'No se pudo crear la Agencia'}, status=500)
         if tipo_usuario=="Clientes":
             try:
-                usuario = Clientes.objects.create_user(email, email, contraseña)
+                usuario = Clientes.objects.create_user(email, email, contrasena)
                 usuario.profile.nombre = nombre
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
@@ -104,36 +103,6 @@ def ruser(request):
             except:
                 return JsonResponse({'error': 'No se pudo crear el Fotografo'}, status=500)
 
-
-@csrf_exempt
-def login(request):
-    if request.method == 'POST':
-        # Parsear el cuerpo de la solicitud
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
-        # Validar campos requeridos
-        campos_requeridos = ['email', 'contrasena ']
-        for campo in campos_requeridos:
-            if campo not in body:
-                return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
-
-        # Autenticar usuario
-        user = authenticate(request, username=body['email'], password=body['contrasena '])
-        if user is not None:
-            # Iniciar sesión y generar token de sesión
-            login(request, user)
-            session_token = user.auth_token.key
-            return JsonResponse({'session_token': session_token}, status=201)
-        else:
-            # Usuario no encontrado o contraseña incorrecta
-            try:
-                User.objects.get(username=body['email'])
-                return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-            except User.DoesNotExist:
-                return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
 """
