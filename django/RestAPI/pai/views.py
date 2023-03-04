@@ -133,6 +133,29 @@ def login(request):
                 return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
     else:
         return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+def acomentarios(request, id):
+    if request.method == "POST":
+        try:
+            photographer = get_object_or_404(Photographer, pk=id)
+            comment_text = request.POST.get("new_comment")
+            rating = request.POST.get("new_rating")
+            
+            if not comment_text:
+                return JsonResponse({"error": "El comentario no puede estar vacío"}, status=400)
+            elif not rating:
+                return JsonResponse({"error": "La valoración no puede estar vacía"}, status=400)
+            elif not rating.isdigit() or int(rating) < 1 or int(rating) > 5:
+                return JsonResponse({"error": "La valoración debe ser un número entre 1 y 5"}, status=400)
+
+            comment = Comment.objects.create(photographer=photographer, user=request.user, text=comment_text, rating=rating)
+            return JsonResponse({"success": "Comentario publicado con éxito"}, status=201)
+
+        except Photographer.DoesNotExist:
+            return JsonResponse({"error": "Fotógrafo no encontrado"}, status=404)
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
 """
 from array import array
 from django.db import models
