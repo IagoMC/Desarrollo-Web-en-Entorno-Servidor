@@ -145,25 +145,25 @@ def acomentarios(request, id):
     if request.method == "POST":
         try:
             fotografo = get_object_or_404(Fotografo, pk=id)
-            data = {
-                'id': fotografo.id,
-                
-            }
-			idcf=request.POST.get("idcf")
-			idUsuario=request.POST.get("idUsuario")
-            Nuevocomentario = request.POST.get("comentario")
+            idcf = request.POST.get("idcf")
+            idUsuario = request.POST.get("idUsuario")
+            comentario = request.POST.get("comentario")
             valoracion = request.POST.get("valoracion")
             
-            if not Nuevocomentario:
+            if not comentario:
                 return JsonResponse({"error": "El comentario no puede estar vacío"}, status=400)
             elif not valoracion:
                 return JsonResponse({"error": "La valoración no puede estar vacía"}, status=400)
-            elif not rating.isdigit() or int(valoracion) < 1 or int(valoracion) > 5:
+            elif not valoracion.isdigit() or int(valoracion) < 1 or int(valoracion) > 5:
                 return JsonResponse({"error": "La valoración debe ser un número entre 1 y 5"}, status=400)
 
-            comment = Comentariofotografo.objects.create(id=idcf,idusuario=idUsuario,idfotografo=fotografo.id, comentario=Nuevocomentario, valoracion=valoracion)
+            comentario_fotografo = ComentarioFotografo.objects.create(id=idcf, idusuario=idUsuario, fotografo=fotografo, comentario=comentario, valoracion=valoracion)
             response_data = {
-                "fotografo": data,
+                "fotografo": {
+                    "id": fotografo.id,
+       
+                    # Agrega aquí los demás campos que quieras incluir
+                },
                 "success": "Comentario publicado con éxito"
             }
             return JsonResponse(response_data, status=201)
