@@ -112,13 +112,13 @@ def login(request):
         body = json.loads(body_unicode)
 
         # Validar campos requeridos
-        campos_requeridos = ['email', 'password']
+        campos_requeridos = ['email', 'contrasena']
         for campo in campos_requeridos:
             if campo not in body:
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
 
         # Autenticar usuario
-        user = authenticate(request, username=body['email'], password=body['password'])
+        user = authenticate(request, username=body['email'], contrasena=body['contrasena'])
         if user is not None:
             # Iniciar sesión y generar token de sesión
             login(request, user)
