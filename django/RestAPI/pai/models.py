@@ -12,7 +12,7 @@ class Agencia(models.Model):
     id = models.IntegerField(primary_key=True)
     email = models.CharField(unique=True, max_length=50)
     nombre = models.CharField(unique=True, max_length=20)
-    contraseña = models.CharField(max_length=20)
+    contrasena = models.CharField(max_length=20)
     telefono = models.IntegerField(unique=True)
     ciudad = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=500, blank=True, null=True)
@@ -32,7 +32,7 @@ class Clientes(models.Model):
     email = models.CharField(unique=True, max_length=50)
     nombre = models.CharField(max_length=20)
     usuario = models.CharField(unique=True, max_length=20)
-    contraseña = models.CharField(max_length=20)
+    contrasena = models.CharField(max_length=20)
     telefono = models.IntegerField(unique=True, blank=True, null=True)
     descripcion = models.CharField(max_length=500, blank=True, null=True)
     fotoperfil = models.CharField(db_column='fotoPerfil', max_length=500, blank=True, null=True)  # Field name made lowercase.
@@ -45,8 +45,8 @@ class Clientes(models.Model):
 
 class Comentarioagencia(models.Model):
     id = models.CharField(primary_key=True, max_length=10)
-    idusuario = models.OneToOneField(Clientes, models.DO_NOTHING, db_column='idUsuario')  # Field name made lowercase.
-    idagencia = models.OneToOneField(Agencia, models.DO_NOTHING, db_column='idAgencia')  # Field name made lowercase.
+    idusuario = models.ForeignKey(Clientes, models.DO_NOTHING, db_column='idUsuario')  # Field name made lowercase.
+    idagencia = models.ForeignKey(Agencia, models.DO_NOTHING, db_column='idAgencia')  # Field name made lowercase.
     comentario = models.CharField(max_length=500)
     valoracion = models.IntegerField()
     foto = models.CharField(max_length=100, blank=True, null=True)
@@ -58,8 +58,8 @@ class Comentarioagencia(models.Model):
 
 class Comentariofotografo(models.Model):
     id = models.CharField(primary_key=True, max_length=10)
-    idusuario = models.OneToOneField(Clientes, models.DO_NOTHING, db_column='idUsuario')  # Field name made lowercase.
-    idfotografo = models.OneToOneField('Fotografo', models.DO_NOTHING, db_column='idFotografo')  # Field name made lowercase.
+    idusuario = models.ForeignKey(Clientes, models.DO_NOTHING, db_column='idUsuario')  # Field name made lowercase.
+    idfotografo = models.ForeignKey('Fotografo', models.DO_NOTHING, db_column='idFotografo')  # Field name made lowercase.
     comentario = models.CharField(max_length=500)
     valoracion = models.IntegerField()
 
@@ -72,7 +72,7 @@ class Fotografo(models.Model):
     email = models.CharField(unique=True, max_length=50)
     nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=50, blank=True, null=True)
-    contraseña = models.CharField(max_length=20)
+    contrasena = models.CharField(max_length=20)
     telefono = models.IntegerField(unique=True)
     ciudad = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=500, blank=True, null=True)
@@ -88,7 +88,7 @@ class Fotografo(models.Model):
 
 
 class Fotosagencia(models.Model):
-    idagencia = models.OneToOneField(Agencia, models.DO_NOTHING, db_column='idAgencia')  # Field name made lowercase.
+    idagencia = models.ForeignKey(Agencia, models.DO_NOTHING, db_column='idAgencia')  # Field name made lowercase.
     foto = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
@@ -97,7 +97,7 @@ class Fotosagencia(models.Model):
 
 
 class Fotosfotografo(models.Model):
-    idfotografo = models.OneToOneField(Fotografo, models.DO_NOTHING, db_column='idFotografo')  # Field name made lowercase.
+    idfotografo = models.ForeignKey(Fotografo, models.DO_NOTHING, db_column='idFotografo')  # Field name made lowercase.
     foto = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
