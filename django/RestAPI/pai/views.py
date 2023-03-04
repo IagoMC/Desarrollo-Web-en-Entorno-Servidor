@@ -104,27 +104,28 @@ def login(request):
         body = json.loads(body_unicode)
 
         # Validar campos requeridos
-        campos_requeridos = ['email', 'contrasena']
+        campos_requeridos = ['type','email', 'contrasena']
         for campo in campos_requeridos:
             if campo not in body:
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
-
-        # Autenticar usuario
-        user = authenticate(request, email=body['email'], contrasena=body['contrasena'])
-        if user is not None:
-            # Iniciar sesión y generar token de sesión
-            login(request, user)
-            session_token = user.auth_token.key
-            return JsonResponse({'session_token': session_token}, status=201)
-        else:
-            # Usuario no encontrado o contraseña incorrecta
-            try:
-                User.objects.get(email=body['email'])
-                return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-            except User.DoesNotExist:
-                return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
-    else:
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
+        
+		if tipo_usuario=="Fotografo":
+			# Autenticar usuario
+			Fotografo = authenticate(request, email=body['email'], contrasena=body['contrasena'])
+			if user is not None:
+				# Iniciar sesión y generar token de sesión
+				login(request, Fotografo)
+				session_token = user.auth_token.key
+				return JsonResponse({'session_token': session_token}, status=201)
+			else:
+				# Usuario no encontrado o contraseña incorrecta
+				try:
+					Fotografo.objects.get(email=body['email'])
+					return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+				except User.DoesNotExist:
+					return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+		else:
+			return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
 @csrf_exempt
