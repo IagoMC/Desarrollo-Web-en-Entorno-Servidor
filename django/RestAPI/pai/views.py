@@ -4,15 +4,54 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.db import models
-from ./.models import (Clientes, Fotografo, Agencia)
+from .models import (Clientes, Fotografo, Agencia)
 #from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Avg, Q
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.contrib.auth import authenticate
-#from django.views.decorators.csrf import csrf_exempt
 
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+
+def buscar_photograpers(request):
+
+	if request.method == "GET":
+	#cogemos los datos del cuerpo
+		#json_load=json.loads(request.body)
+		query=request.GET.get('query', '')
+		#size=json_load['size']
+		#rating=json_load['rating']
+		#rated_under=json_load['rated_under']
+		print(query)
+
+		if query :
+			fotografo=Fotografo.objects.filter(
+				Q(nombre__icontains=query) 
+				| Q(descripcion__icontains=query)
+			)
+			resultado = []
+			i=1
+			while i< fotografo.count():
+				guardar={}
+					
+				guardar['id']=fotografo[i].id,
+				guardar['Nombre']= fotografo[i].nombre,
+
+				resultado.append(guardar)
+				i=i+1
+	
+			return JsonResponse(resultado, safe=False)
+		
+		
+		if query==None:
+			resultado=[]
+			resultado=({
+				'hola'
+			})
+
+			return JsonResponse(resultado)
 """
 from array import array
 from django.db import models
@@ -302,49 +341,8 @@ def editar_perfitl(reques):
 		if editar_ciudad!="":
 			agencia.ciudad=editar_ciudad	
 		agencia.save()
-"""
-
-#@csrf_exempt
-def buscar_photograpers(request):
-
-	if request.method == "GET":
-	#cogemos los datos del cuerpo
-		#json_load=json.loads(request.body)
-		query=request.GET.get('query', '')
-		#size=json_load['size']
-		#rating=json_load['rating']
-		#rated_under=json_load['rated_under']
-		print(query)
-
-		if query :
-			fotografo=Fotografo.objects.filter(
-				Q(nombre__icontains=query) 
-				| Q(descripcion__icontains=query)
-			)
-			resultado = []
-			i=1
-			while i< fotografo.count():
-				guardar={}
-					
-				guardar['id']=fotografo[i].id,
-				guardar['Nombre']= fotografo[i].nombre,
-
-				resultado.append(guardar)
-				i=i+1
-	
-			return JsonResponse(resultado, safe=False)
-		
-		
-		if query==None:
-			resultado=[]
-			resultado=({
-				'hola'
-			})
-
-			return JsonResponse(resultado)
-"""
-#realizamos varias sentencias para seleccionar la busqueda correcta
-# si query no esta vacio y rating esta vacio realziamos esta busqueda
+	realizamos varias sentencias para seleccionar la busqueda correcta
+	# si query no esta vacio y rating esta vacio realziamos esta busqueda
 	if query!="" and rating=="":
 			i=1
 			#cogemos todos los datos de fotografo quye cumplen con las siguientes sentencias
