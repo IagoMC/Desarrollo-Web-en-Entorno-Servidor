@@ -20,33 +20,28 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET
 @require_GET
-def get_photographers(request):
+def buscar_photograpers(request):
     query = request.GET.get("query")
-    photographers = Photographer.objects.all()
+    fotografo = Fotografo.objects.all()
 
     # Filter by query
     if query:
         query = query.lower()
-        photographers = photographers.filter(
-            Q(name__icontains=query) | Q(description__icontains=query) | Q(city__icontains=query)
+        fotografo = fotografo.filter(
+            Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
 
     # Sort by average rating (from highest to lowest)
-    photographers = photographers.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
+    #fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
 
     data = []
-    for photographer in photographers:
+    for fotografo in fotografo:
         data.append(
             {
-                "id": photographer.id,
-                "name": photographer.name,
-                "description": photographer.description,
-                "phone": photographer.phone,
-                "instagram": photographer.instagram,
-                "twitter": photographer.twitter,
-                "tiktok": photographer.tiktok,
-                "photo": photographer.photo.url if photographer.photo else None,
-                "averageRating": photographer.comments.all().aggregate(Avg("rating"))["rating__avg"],
+                "id": fotografo.id,
+                "name": fotografo.nombre,
+                "description": fotografo.descripcion,
+                
             }
         )
 
