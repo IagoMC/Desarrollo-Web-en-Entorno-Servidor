@@ -110,7 +110,7 @@ def login(request):
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
 
         # Autenticar usuario
-        user = authenticate(request, username=body['email'], contrasena=body['contrasena'])
+        user = authenticate(request, email=body['email'], contrasena=body['contrasena'])
         if user is not None:
             # Iniciar sesión y generar token de sesión
             login(request, user)
@@ -119,7 +119,7 @@ def login(request):
         else:
             # Usuario no encontrado o contraseña incorrecta
             try:
-                User.objects.get(username=body['email'])
+                User.objects.get(email=body['email'])
                 return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
             except User.DoesNotExist:
                 return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
