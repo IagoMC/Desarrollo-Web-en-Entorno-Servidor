@@ -144,31 +144,31 @@ def login(request):
 def acomentarios(request, id):
     if request.method == "POST":
         try:
-            photographer = get_object_or_404(Photographer, pk=id)
+            fotografo = get_object_or_404(Fotografo, pk=id)
             data = {
-                'id': photographer.id,
-                'name': photographer.name,
-                'location': photographer.location,
-                'bio': photographer.bio
+                'id': fotografo.id,
+                
             }
-            comment_text = request.POST.get("new_comment")
-            rating = request.POST.get("new_rating")
+			idcf=request.POST.get("idcf")
+			idUsuario=request.POST.get("idUsuario")
+            Nuevocomentario = request.POST.get("comentario")
+            valoracion = request.POST.get("valoracion")
             
-            if not comment_text:
+            if not Nuevocomentario:
                 return JsonResponse({"error": "El comentario no puede estar vacío"}, status=400)
-            elif not rating:
+            elif not valoracion:
                 return JsonResponse({"error": "La valoración no puede estar vacía"}, status=400)
-            elif not rating.isdigit() or int(rating) < 1 or int(rating) > 5:
+            elif not rating.isdigit() or int(valoracion) < 1 or int(valoracion) > 5:
                 return JsonResponse({"error": "La valoración debe ser un número entre 1 y 5"}, status=400)
 
-            comment = Comment.objects.create(photographer=photographer, user=request.user, text=comment_text, rating=rating)
+            comment = Comentariofotografo.objects.create(id=idcf,idusuario=idUsuario,idfotografo=fotografo.id, comentario=Nuevocomentario, valoracion=valoracion)
             response_data = {
-                "photographer": data,
+                "fotografo": data,
                 "success": "Comentario publicado con éxito"
             }
             return JsonResponse(response_data, status=201)
 
-        except Photographer.DoesNotExist:
+        except Fotografo.DoesNotExist:
             return JsonResponse({"error": "Fotógrafo no encontrado"}, status=404)
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
