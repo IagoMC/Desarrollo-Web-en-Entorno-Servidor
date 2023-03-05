@@ -9,7 +9,7 @@ urlpatterns = [
    # path('password', views.cambiar_contrasena),
     path('getphographers', views.buscar_photograpers),
     path('regi', views.ruser),
-    path('login', views.login),
+    path('login', views.loguearse),
     path('fotografos/<str:id>/acomentarios/', views.acomentarios),
 
  
