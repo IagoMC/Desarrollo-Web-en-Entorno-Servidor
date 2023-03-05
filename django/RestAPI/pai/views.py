@@ -22,7 +22,8 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET
 import json
-
+import random
+import string
 
 @require_GET
 def buscar_photograpers(request):
@@ -100,50 +101,36 @@ def ruser(request):
 
 @csrf_exempt
 def loguearse(request):
-    if request.method == 'POST':
-        # Parsear el cuerpo de la solicitud
-        bodyunicode = request.body.decode('utf-8')
-        body = json.loads(bodyunicode)
-
-        # Validar campos requeridos
-        campos_requeridos = ['email', 'contrasena']
-        for campo in campos_requeridos:
-            if campo not in body:
-                return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
-
-        usuario = None
-        # Buscar usuario en la tabla Fotografo
+    if request.method == "POST":
+        email = request.POST.get('email')
+        contrasena = request.POST.get('contrasena')
+        
+        # Buscar en Cliente
         try:
-            usuario = Fotografo.objects.get(email=body['email'])
+            cliente = Cliente.objects.get(email=email, contrasena=contrasena)
+            token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            return JsonResponse({'sesiontoken': token}, status=201)
+        except Cliente.DoesNotExist:
+            pass
+        
+        # Buscar en Agencia
+        try:
+            agencia = Agencia.objects.get(email=email, contrasena=contrasena)
+            token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            return JsonResponse({'sesiontoken': token}, status=201)
+        except Agencia.DoesNotExist:
+            pass
+        
+        # Buscar en Fotografo
+        try:
+            fotografo = Fotografo.objects.get(email=email, contrasena=contrasena)
+            token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            return JsonResponse({'sesiontoken': token}, status=201)
         except Fotografo.DoesNotExist:
             pass
-
-        # Buscar usuario en la tabla Agencia
-        if usuario is None:
-            try:
-                usuario = Agencia.objects.get(email=body['email'])
-            except Agencia.DoesNotExist:
-                pass
-
-        # Buscar usuario en la tabla Clientes
-        if usuario is None:
-            try:
-                usuario = Clientes.objects.get(email=body['email'])
-            except Clientes.DoesNotExist:
-                pass
-
-        # Si se encontró el usuario, se verifica la contraseña
-        if usuario is not None:
-            if usuario.contrasena == body['contrasena']:
-                # Iniciar sesión y generar token de sesión
-                login(request, usuario)
-                session_token = usuario.auth_token.key
-                return JsonResponse({'session_token': session_token}, status=201)
-            else:
-                # Contraseña incorrecta
-                return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-        else:
-            return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+        
+        # Si no se encuentra en ninguna tabla, devolver un error 404
+        return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
 
 """
 from array import array
