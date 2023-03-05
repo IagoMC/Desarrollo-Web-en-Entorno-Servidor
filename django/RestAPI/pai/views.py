@@ -96,19 +96,17 @@ def ruser(request):
 
 
 
-@csrf_exempt
 def loguearse(request):
     if request.method == 'POST':
         # Parsear el cuerpo de la solicitud
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        body = request.json()
 
         # Validar campos requeridos
         campos_requeridos = ['email', 'contrasena']
         for campo in campos_requeridos:
             if campo not in body:
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
-        
+
         usuario = None
         # Buscar usuario en la tabla Fotografo
         try:
