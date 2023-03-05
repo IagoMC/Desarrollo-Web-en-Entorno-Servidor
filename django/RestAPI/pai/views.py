@@ -113,28 +113,28 @@ def loguearse(request):
     if not email or not contrasena:
         return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
 
-	if Clientes.objects.get(email=email).exists():
-		clientes= Clientes.objects.get(email=email)
-		if clientes.contrasena!=contrasena:
-            return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-        token = ''.join(choices(ascii_uppercase + digits, k=6))
-        return JsonResponse({'sesiontoken': token}, status=201)
+		if Clientes.objects.get(email=email).exists():
+			clientes= Clientes.objects.get(email=email)
+			if clientes.contrasena!=contrasena:
+				return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+			token = ''.join(choices(ascii_uppercase + digits, k=6))
+			return JsonResponse({'sesiontoken': token}, status=201)
 
-	elif Fotografo.objects.get(email=email).exists():
-		fotografo= Fotografo.objects.get(email=email)
-		if fotografo.contrasena!=contrasena:
-            return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-        token = ''.join(choices(ascii_uppercase + digits, k=6))
-        return JsonResponse({'sesiontoken': token}, status=201)
+		elif Fotografo.objects.get(email=email).exists():
+			fotografo= Fotografo.objects.get(email=email)
+			if fotografo.contrasena!=contrasena:
+				return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+			token = ''.join(choices(ascii_uppercase + digits, k=6))
+			return JsonResponse({'sesiontoken': token}, status=201)
 
-	elif Agencia.objects.get(email=email).exists():
-		agencia= Agencia.objects.get(email=email)
-		if agencia.contrasena!=contrasena:
-            return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-        token = ''.join(choices(ascii_uppercase + digits, k=6))
-        return JsonResponse({'sesiontoken': token}, status=201)
-	else:
-        return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+		elif Agencia.objects.get(email=email).exists():
+			agencia= Agencia.objects.get(email=email)
+			if agencia.contrasena!=contrasena:
+				return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+			token = ''.join(choices(ascii_uppercase + digits, k=6))
+			return JsonResponse({'sesiontoken': token}, status=201)
+		else:
+			return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
 
     
 """
