@@ -70,30 +70,24 @@ def ruser(request):
         email = body['email']
         nombre = body['nombre']
         contrasena = body['contrasena']
-        if tipo_usuario=="Agencia":
+        modelos_usuario = {
+            'Agencia': Agencia,
+            'Clientes': Clientes,
+            'Fotografo': Fotografo,
+        }
+        if tipo_usuario in modelos_usuario:
             try:
-                usuario = Agencia.objects.create_user(email, nombre, contrasena)
+                usuario_modelo = modelos_usuario[tipo_usuario]
+                if usuario_modelo.objects.filter(email=email).exists():
+                    return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400)
+                usuario = usuario_modelo.objects.create_user(email, email, contrasena)
                 usuario.profile.nombre = nombre
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
-            except:
-                return JsonResponse({'error': 'No se pudo crear la Agencia'}, status=500)
-        if tipo_usuario=="Clientes":
-            try:
-                usuario = Clientes.objects.create_user(email, nombre, contrasena)
-                usuario.profile.nombre = nombre
-                usuario.save()
-                return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
-            except:
-                return JsonResponse({'error': 'No se pudo crear el Cliente'}, status=500)
-        if tipo_usuario=="Fotografo":
-            try:
-                usuario = Fotografo.objects.create_user(email, nombre, contraseña)
-                usuario.profile.nombre = nombre
-                usuario.save()
-                return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
-            except:
-                return JsonResponse({'error': 'No se pudo crear el Fotografo'}, status=500)
+            except Exception as e:
+                return JsonResponse({'error': f'No se pudo crear el usuario: {e}'}, status=500)
+        else:
+            return JsonResponse({'error': f'Tipo de usuario no válido: {tipo_usuario}'}, status=400)
 
 
 @csrf_exempt
