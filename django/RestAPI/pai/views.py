@@ -1,5 +1,4 @@
 
-import json
 
 from random import randrange
 from django.shortcuts import render
@@ -21,6 +20,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_GET
+import json
+
+
 @require_GET
 def buscar_photograpers(request):
     query = request.GET.get("query")
@@ -99,7 +101,8 @@ def ruser(request):
 def loguearse(request):
     if request.method == 'POST':
         # Parsear el cuerpo de la solicitud
-        body = request.json()
+        bodyunicode = request.body.decode('utf-8')
+        body = json.loads(bodyunicode)
 
         # Validar campos requeridos
         campos_requeridos = ['email', 'contrasena']
