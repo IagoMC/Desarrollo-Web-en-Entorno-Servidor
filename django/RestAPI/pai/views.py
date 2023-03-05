@@ -134,8 +134,7 @@ def loguearse(request):
 @csrf_exempt
 def aComentaris(request, fotografo_id):
     if request.method == 'POST':
-		
-	token = request.headers.get(token)
+        token = request.headers.get('token')
         data = json.loads(request.body)
         comentario = data.get('comentario')
         rating = data.get('rating')
@@ -166,7 +165,7 @@ def aComentaris(request, fotografo_id):
             comentario=comentario,
             valoracion=int(rating),
         )
-        return JsonResponse({'message': 'Comentario y valoración publicados'}, status=201)   
+        return JsonResponse({'message': 'Comentario y valoración publicados'}, status=201)  
 """
 RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/fotografos/26/comentarios/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
 from array import array
