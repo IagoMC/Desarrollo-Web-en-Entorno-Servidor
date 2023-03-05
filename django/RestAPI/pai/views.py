@@ -12,7 +12,7 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.views import login
+#from django.contrib.auth.views import login
 
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
