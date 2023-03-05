@@ -106,55 +106,37 @@ def loguearse(request):
 
     data = json.loads(request.body)
     email = data.get('email')
-    password = data.get('contrasena')
-    if not email or not password:
+    contrasena = data.get('contrasena')
+
+
+
+    if not email or not contrasena:
         return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
 
-    # Buscamos el usuario por email y contraseña
-    try:
-        user = User.objects.get(email=email)
-        if not user.check_password(password):
+	if Clientes.objects.get(email=email).exists():
+		clientes= Clientes.objects.get(email=email)
+		if clientes.contrasena!=contrasena:
             return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-    except User.DoesNotExist:
+        token = ''.join(choices(ascii_uppercase + digits, k=6))
+        return JsonResponse({'sesiontoken': token}, status=201)
+
+	elif Fotografo.objects.get(email=email).exists():
+		fotografo= Fotografo.objects.get(email=email)
+		if fotografo.contrasena!=contrasena:
+            return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+        token = ''.join(choices(ascii_uppercase + digits, k=6))
+        return JsonResponse({'sesiontoken': token}, status=201)
+
+	elif Agencia.objects.get(email=email).exists():
+		agencia= Agencia.objects.get(email=email)
+		if agencia.contrasena!=contrasena:
+            return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+        token = ''.join(choices(ascii_uppercase + digits, k=6))
+        return JsonResponse({'sesiontoken': token}, status=201)
+	else:
         return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
 
-    # Buscamos el usuario en las tres tablas
-    cliente = None
-    fotografo = None
-    agencia = None
-
-    try:
-        cliente = Cliente.objects.get(user=user)
-    except Cliente.DoesNotExist:
-        pass
-
-    try:
-        fotografo = Fotografo.objects.get(user=user)
-    except Fotografo.DoesNotExist:
-        pass
-
-    try:
-        agencia = Agencia.objects.get(user=user)
-    except Agencia.DoesNotExist:
-        pass
-
-    # Si encontramos al usuario, creamos una sesión y devolvemos el token
-    if cliente:
-        token = ''.join(choices(ascii_uppercase + digits, k=6))
-        Sesion.objects.create(cliente=cliente, token=token)
-        return JsonResponse({'sesiontoken': token}, status=201)
-
-    if fotografo:
-        token = ''.join(choices(ascii_uppercase + digits, k=6))
-        Sesion.objects.create(fotografo=fotografo, token=token)
-        return JsonResponse({'sesiontoken': token}, status=201)
-
-    if agencia:
-        token = ''.join(choices(ascii_uppercase + digits, k=6))
-        Sesion.objects.create(agencia=agencia, token=token)
-        return JsonResponse({'sesiontoken': token}, status=201)
-
-    return JsonResponse({'error': 'No se encontró el usuario en ninguna tabla'}, status=404)
+    
 """
 from array import array
 from django.db import models
