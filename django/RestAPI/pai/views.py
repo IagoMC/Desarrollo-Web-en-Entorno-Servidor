@@ -110,7 +110,7 @@ def loguearse(request):
     contrasena = data.get('contrasena')
 
     if not email or not contrasena:
-        return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
+        return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400, safe=False)
 
     try:
         usuario = Clientes.objects.get(email=email)
@@ -121,15 +121,15 @@ def loguearse(request):
             try:
                 usuario = Agencia.objects.get(email=email)
             except Agencia.DoesNotExist:
-                return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+                return JsonResponse({'error': 'No se encontró el usuario'}, status=404, safe=False)
 
     if usuario.contrasena != contrasena:
-        return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+        return JsonResponse({'error': 'Contraseña incorrecta'}, status=401, safe=False)
 
     token = ''.join(choices(ascii_uppercase + digits, k=6))
     #Sesion.objects.create(usuario=usuario, token=token)
 
-    return JsonResponse({'sesiontoken': token}, status=201)
+    return JsonResponse({'sesiontoken': token}, status=201, safe=False)
 
 @csrf_exempt
 def aComentaris(request, fotografo_id):
@@ -166,6 +166,7 @@ def aComentaris(request, fotografo_id):
         )
         return JsonResponse({'message': 'Comentario y valoración publicados'}, status=201)   
 """
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/fotografos/26/comentarios/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
 from array import array
 from django.db import models
 #from django.contrib.auth.hashers import hashpw, gensalt

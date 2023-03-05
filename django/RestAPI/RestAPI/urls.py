@@ -10,7 +10,7 @@ urlpatterns = [
     path('getphographers', views.buscar_photograpers),
     path('regi', views.ruser),
     path('login', views.loguearse),
-   # path('fotografos/<str:id>/acomentarios/', views.acomentarios),
+    path('fotografos/<int:id>/comentarios/', views.aComentaris),
 
  
 #    path('user',views.create_user),
