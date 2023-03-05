@@ -150,23 +150,18 @@ def aComentaris(request, fotografo_id):
         try:
             usuario = Clientes.objects.get(token=token)
         except Clientes.DoesNotExist:
-            try:
-                usuario = Fotografo.objects.get(token=token)
-            except Fotografo.DoesNotExist:
-                try:
-                    usuario = Agencia.objects.get(token=token)
-                except Agencia.DoesNotExist:
-                    return JsonResponse({'error': 'No autorizado'}, status=404)
+            return JsonResponse({'error': 'No autorizado'}, status=404)
 
         comentarioFotografo = Comentariofotografo.objects.create(
             id=Comentariofotografo.objects.count()+1,
-            idusuario=usuario,
+            idusuario=usuario.id,
             idfotografo=fotografo_id,
             comentario=comentario,
             valoracion=int(rating),
         )
         return JsonResponse({'message': 'Comentario y valoración publicados'}, status=201)  
 """
+ValueError: Cannot assign "9": "Comentariofotografo.idusuario" must be a "Clientes" instance.
 ValueError: Cannot assign "<Agencia: Agencia object (1)>": "Comentariofotografo.idusuario" must be a "Clientes" instance.
 ValueError: Cannot assign "1": "Comentariofotografo.idusuario" must be a "Clientes" instance.
 RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to localhost:8000/fotografos/26/comentarios/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
