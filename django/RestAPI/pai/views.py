@@ -135,6 +135,7 @@ def loguearse(request):
 def aComentaris(request, fotografo_id):
     if request.method == 'POST':
 		
+		token = request.headers.get(token)
         data = json.loads(request.body)
         comentario = data.get('comentario')
         rating = data.get('rating')
@@ -143,7 +144,7 @@ def aComentaris(request, fotografo_id):
             return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
 
         try:
-            fotografo = Fotografo.objects.get(id=fotofotografo_id)
+            fotografo = Fotografo.objects.get(id=fotografo_id)
         except Fotografo.DoesNotExist:
             return JsonResponse({'error': 'Fotógrafo no encontrado'}, status=404)
 
