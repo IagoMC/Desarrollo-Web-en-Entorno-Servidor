@@ -101,40 +101,33 @@ def ruser(request):
 
 @csrf_exempt
 def loguearse(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Método no permitido'}, status=405)
+ if request.method == 'POST':
 
     data = json.loads(request.body)
     email = data.get('email')
     contrasena = data.get('contrasena')
 
-
-
     if not email or not contrasena:
         return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
 
-		if Clientes.objects.get(email=email).exists():
-			clientes= Clientes.objects.get(email=email)
-			if clientes.contrasena!=contrasena:
-				return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-			token = ''.join(choices(ascii_uppercase + digits, k=6))
-			return JsonResponse({'sesiontoken': token}, status=201)
+    try:
+        usuario = Clientes.objects.get(email=email)
+    except Clientes.DoesNotExist:
+        try:
+            usuario = Fotografo.objects.get(email=email)
+        except Fotografo.DoesNotExist:
+            try:
+                usuario = Agencia.objects.get(email=email)
+            except Agencia.DoesNotExist:
+                return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
 
-		elif Fotografo.objects.get(email=email).exists():
-			fotografo= Fotografo.objects.get(email=email)
-			if fotografo.contrasena!=contrasena:
-				return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-			token = ''.join(choices(ascii_uppercase + digits, k=6))
-			return JsonResponse({'sesiontoken': token}, status=201)
+    if usuario.contrasena != contrasena:
+        return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
 
-		elif Agencia.objects.get(email=email).exists():
-			agencia= Agencia.objects.get(email=email)
-			if agencia.contrasena!=contrasena:
-				return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-			token = ''.join(choices(ascii_uppercase + digits, k=6))
-			return JsonResponse({'sesiontoken': token}, status=201)
-		else:
-			return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+    token = ''.join(choices(ascii_uppercase + digits, k=6))
+    #Sesion.objects.create(usuario=usuario, token=token)
+
+    return JsonResponse({'sesiontoken': token}, status=201)
 
     
 """
