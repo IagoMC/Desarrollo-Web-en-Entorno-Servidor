@@ -52,8 +52,8 @@ def buscar_photograpers(request):
 def ruser(request):
     if request.method == 'POST':
         # parsear el cuerpo de la solicitud
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        bodyunicode = request.body.decode('utf-8')
+        body = json.loads(bodyunicode)
         
         # validar campos requeridos
         campos_requeridos = ['type', 'email', 'nombre', 'contrasena', 'ccontrasena']
