@@ -142,38 +142,51 @@ def loguearse(request):
             return JsonResponse({'error': 'Usuario o contraseña incorrectos'}, status=401)
 
 @csrf_exempt
-@login_required
-def acomentarios(request, id):
-    if request.method == "POST":
+def loguearse(request):
+    if request.method == 'POST':
+        # Parsear el cuerpo de la solicitud
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+
+        # Validar campos requeridos
+        campos_requeridos = ['email', 'contrasena']
+        for campo in campos_requeridos:
+            if campo not in body:
+                return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
+        
+        usuario = None
+        # Buscar usuario en la tabla Fotografo
         try:
-            fotografo = get_object_or_404(Fotografo, pk=id)
-            idcf = request.POST.get("idcf")
-            idUsuario = request.POST.get("idUsuario")
-            comentario = request.POST.get("comentario")
-            valoracion = request.POST.get("valoracion")
-            
-            if not comentario:
-                return JsonResponse({"error": "El comentario no puede estar vacío"}, status=400)
-            elif not valoracion:
-                return JsonResponse({"error": "La valoración no puede estar vacía"}, status=400)
-            elif not valoracion.isdigit() or int(valoracion) < 1 or int(valoracion) > 5:
-                return JsonResponse({"error": "La valoración debe ser un número entre 1 y 5"}, status=400)
-
-            comentario_fotografo = ComentarioFotografo.objects.create(id=idcf, idusuario=idUsuario, fotografo=fotografo, comentario=comentario, valoracion=valoracion)
-            response_data = {
-                "fotografo": {
-                    "id": fotografo.id,
-       
-                    # Agrega aquí los demás campos que quieras incluir
-                },
-                "success": "Comentario publicado con éxito"
-            }
-            return JsonResponse(response_data, status=201)
-
+            usuario = Fotografo.objects.get(email=body['email'])
         except Fotografo.DoesNotExist:
-            return JsonResponse({"error": "Fotógrafo no encontrado"}, status=404)
+            pass
 
-    return JsonResponse({"error": "Método no permitido"}, status=405)
+        # Buscar usuario en la tabla Agencia
+        if usuario is None:
+            try:
+                usuario = Agencia.objects.get(email=body['email'])
+            except Agencia.DoesNotExist:
+                pass
+
+        # Buscar usuario en la tabla Clientes
+        if usuario is None:
+            try:
+                usuario = Clientes.objects.get(email=body['email'])
+            except Clientes.DoesNotExist:
+                pass
+
+        # Si se encontró el usuario, se verifica la contraseña
+        if usuario is not None:
+            if usuario.contrasena == body['contrasena']:
+                # Iniciar sesión y generar token de sesión
+                login(request, usuario)
+                session_token = usuario.auth_token.key
+                return JsonResponse({'session_token': session_token}, status=201)
+            else:
+                # Contraseña incorrecta
+                return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+        else:
+            return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
 
 """
 from array import array
