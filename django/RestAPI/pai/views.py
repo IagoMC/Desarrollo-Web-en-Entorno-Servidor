@@ -134,6 +134,7 @@ def loguearse(request):
 @csrf_exempt
 def aComentaris(request, fotografo_id):
     if request.method == 'POST':
+		
         data = json.loads(request.body)
         comentario = data.get('comentario')
         rating = data.get('rating')
@@ -142,7 +143,7 @@ def aComentaris(request, fotografo_id):
             return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
 
         try:
-            fotografo = Fotografo.objects.get(id=fotofotografo_id_id)
+            fotografo = Fotografo.objects.get(id=fotofotografo_id)
         except Fotografo.DoesNotExist:
             return JsonResponse({'error': 'Fotógrafo no encontrado'}, status=404)
 
