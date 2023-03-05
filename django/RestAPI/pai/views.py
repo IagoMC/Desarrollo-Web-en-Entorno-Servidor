@@ -72,7 +72,7 @@ def ruser(request):
         email = body['email']
         nombre = body['nombre']
         contrasena = body['contrasena']
-        telefono = body['telefono']
+        telefono = int(body['telefono'])  # convertir el valor de "telefono" de string a int
         ciudad = body['ciudad']
         modelos_usuario = {
             'Agencia': Agencia,
