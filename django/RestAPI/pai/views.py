@@ -135,7 +135,7 @@ def loguearse(request):
 def aComentaris(request, fotografo_id):
     if request.method == 'POST':
 		
-		token = request.headers.get(token)
+	token = request.headers.get(token)
         data = json.loads(request.body)
         comentario = data.get('comentario')
         rating = data.get('rating')
