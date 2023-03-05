@@ -67,7 +67,7 @@ def ruser(request):
         if body['contrasena'] != body['ccontrasena']:
             return JsonResponse({'error': 'Los campos de contraseña no coinciden'}, status=400)
         
-        # crear usuario
+        # insertar usuario
         tipo_usuario = body['type']
         id = int(body['id'])  # convertir el valor de "id" de string a int
         email = body['email']
@@ -85,10 +85,22 @@ def ruser(request):
                 usuario_modelo = modelos_usuario[tipo_usuario]
                 if usuario_modelo.objects.filter(email=email).exists():
                     return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
-                usuario = usuario_modelo.objects.create_user(id, nombre, email, contrasena, telefono=telefono, ciudad=ciudad)
-                usuario.profile.nombre = nombre
+                
+                # Crear instancia del modelo de usuario correspondiente
+                usuario = usuario_modelo()
+                
+                # Establecer valores de los campos
+                usuario.id = id
+                usuario.email = email
+                usuario.set_password(contrasena)
+                usuario.telefono = telefono
+                usuario.ciudad = ciudad
+                
+                # Guardar instancia en la base de datos
                 usuario.save()
+                
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201, safe=False)
+                
             except Exception as e:
                 return JsonResponse({'error': f'No se pudo crear el usuario: {e}'}, status=500, safe=False)
         else:
