@@ -101,37 +101,60 @@ def ruser(request):
 
 @csrf_exempt
 def loguearse(request):
-    if request.method == "POST":
-        email = request.POST.get('email')
-        contrasena = request.POST.get('contrasena')
-        
-        # Buscar en Cliente
-        try:
-            cliente = Cliente.objects.get(email=email, contrasena=contrasena)
-            token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            return JsonResponse({'sesiontoken': token}, status=201)
-        except Cliente.DoesNotExist:
-            pass
-        
-        # Buscar en Agencia
-        try:
-            agencia = Agencia.objects.get(email=email, contrasena=contrasena)
-            token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            return JsonResponse({'sesiontoken': token}, status=201)
-        except Agencia.DoesNotExist:
-            pass
-        
-        # Buscar en Fotografo
-        try:
-            fotografo = Fotografo.objects.get(email=email, contrasena=contrasena)
-            token = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            return JsonResponse({'sesiontoken': token}, status=201)
-        except Fotografo.DoesNotExist:
-            pass
-        
-        # Si no se encuentra en ninguna tabla, devolver un error 404
-        return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+    data = json.loads(request.body)
+    email = data.get('email')
+    password = data.get('contrasena')
+    if not email or not password:
+        return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
+
+    # Buscamos el usuario por email y contraseña
+    try:
+        user = User.objects.get(email=email)
+        if not user.check_password(password):
+            return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+
+    # Buscamos el usuario en las tres tablas
+    cliente = None
+    fotografo = None
+    agencia = None
+
+    try:
+        cliente = Cliente.objects.get(user=user)
+    except Cliente.DoesNotExist:
+        pass
+
+    try:
+        fotografo = Fotografo.objects.get(user=user)
+    except Fotografo.DoesNotExist:
+        pass
+
+    try:
+        agencia = Agencia.objects.get(user=user)
+    except Agencia.DoesNotExist:
+        pass
+
+    # Si encontramos al usuario, creamos una sesión y devolvemos el token
+    if cliente:
+        token = ''.join(choices(ascii_uppercase + digits, k=6))
+        Sesion.objects.create(cliente=cliente, token=token)
+        return JsonResponse({'sesiontoken': token}, status=201)
+
+    if fotografo:
+        token = ''.join(choices(ascii_uppercase + digits, k=6))
+        Sesion.objects.create(fotografo=fotografo, token=token)
+        return JsonResponse({'sesiontoken': token}, status=201)
+
+    if agencia:
+        token = ''.join(choices(ascii_uppercase + digits, k=6))
+        Sesion.objects.create(agencia=agencia, token=token)
+        return JsonResponse({'sesiontoken': token}, status=201)
+
+    return JsonResponse({'error': 'No se encontró el usuario en ninguna tabla'}, status=404)
 """
 from array import array
 from django.db import models
