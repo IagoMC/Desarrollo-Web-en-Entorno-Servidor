@@ -79,15 +79,15 @@ def ruser(request):
             try:
                 usuario_modelo = modelos_usuario[tipo_usuario]
                 if usuario_modelo.objects.filter(email=email).exists():
-                    return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400)
-                usuario = usuario_modelo.objects.create_user(email, email, contrasena)
+                    return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
+                usuario = usuario_modelo.objects.create_user(nombre, email, contrasena)
                 usuario.profile.nombre = nombre
                 usuario.save()
-                return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
+                return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201,safe=False)
             except Exception as e:
-                return JsonResponse({'error': f'No se pudo crear el usuario: {e}'}, status=500)
+                return JsonResponse({'error': f'No se pudo crear el usuario: {e}'}, status=500,safe=False)
         else:
-            return JsonResponse({'error': f'Tipo de usuario no válido: {tipo_usuario}'}, status=400)
+            return JsonResponse({'error': f'Tipo de usuario no válido: {tipo_usuario}'}, status=400, safe=False)
 
 
 @csrf_exempt
