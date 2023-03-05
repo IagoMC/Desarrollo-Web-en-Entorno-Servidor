@@ -95,7 +95,7 @@ def ruser(request):
             return JsonResponse({'error': f'Tipo de usuario no válido: {tipo_usuario}'}, status=400, safe=False)
 
 
-
+@csrf_exempt
 def loguearse(request):
     if request.method == 'POST':
         # Parsear el cuerpo de la solicitud
