@@ -131,7 +131,45 @@ def loguearse(request):
 
     return JsonResponse({'sesiontoken': token}, status=201)
 
-    
+@csrf_exempt
+def aComentaris(request, fotografo_id):
+    if request.method == 'POST':
+
+    data = json.loads(request.body)
+    comentario = data.get('comentario')
+    rating = data.get('rating')
+
+    if not comentario or not rating:
+        return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400)
+
+    try:
+        fotografo = Fotografo.objects.get(id=fotofotografo_id_id)
+    except Fotografo.DoesNotExist:
+        return JsonResponse({'error': 'Fotógrafo no encontrado'}, status=404)
+
+
+    try:
+        usuario = Clientes.objects.get(token=token)
+    except Clientes.DoesNotExist:
+        try:
+            usuario = Fotografo.objects.get(token=token)
+        except Fotografo.DoesNotExist:
+            try:
+                usuario = Agencia.objects.get(token=token)
+            except Agencia.DoesNotExist:
+                return JsonResponse({'error': 'No autorizado'}, status=404)
+
+
+
+
+    comentarioFotografo = ComentarioFotografo.objects.create(
+        id=ComentarioFotografo.objects.all()+1,
+        idUsuario=usuario.id,
+        idFotografo=fotografo_id,
+	comentario=comentario,
+        valoracion=rating,
+    )
+    return JsonResponse({'message': 'Comentario y valoración publicados'}, status=201)    
 """
 from array import array
 from django.db import models
