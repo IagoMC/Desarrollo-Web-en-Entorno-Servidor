@@ -72,7 +72,7 @@ def ruser(request):
         contrasena = body['contrasena']
         if tipo_usuario=="Agencia":
             try:
-                usuario = Agencia.objects.create_user(email, email, contrasena)
+                usuario = Agencia.objects.create_user(email, nombre, contrasena)
                 usuario.profile.nombre = nombre
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
@@ -80,7 +80,7 @@ def ruser(request):
                 return JsonResponse({'error': 'No se pudo crear la Agencia'}, status=500)
         if tipo_usuario=="Clientes":
             try:
-                usuario = Clientes.objects.create_user(email, email, contrasena)
+                usuario = Clientes.objects.create_user(email, nombre, contrasena)
                 usuario.profile.nombre = nombre
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
@@ -88,7 +88,7 @@ def ruser(request):
                 return JsonResponse({'error': 'No se pudo crear el Cliente'}, status=500)
         if tipo_usuario=="Fotografo":
             try:
-                usuario = Fotografo.objects.create_user(email, email, contraseña)
+                usuario = Fotografo.objects.create_user(email, nombre, contraseña)
                 usuario.profile.nombre = nombre
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201)
@@ -112,11 +112,11 @@ def login(request):
         tipo_usuario = body['type']
         if tipo_usuario == "Fotografo":
             # Autenticar usuario
-            fotografo = authenticate(request, email=body['email'], contrasena=body['contrasena'])
-            if fotografo is not None:
+            Fotografo = authenticate(request, email=body['email'], contrasena=body['contrasena'])
+            if Fotografo is not None:
                 # Iniciar sesión y generar token de sesión
-                login(request, fotografo)
-                session_token = fotografo.auth_token.key
+                login(request, Fotografo)
+                session_token = Fotografo.auth_token.key
                 return JsonResponse({'session_token': session_token}, status=201)
             else:
                 # Usuario no encontrado o contraseña incorrecta
