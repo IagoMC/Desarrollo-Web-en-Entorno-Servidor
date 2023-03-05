@@ -109,22 +109,55 @@ def login(request):
         
         tipo_usuario = body['type']
         if tipo_usuario == "Fotografo":
+            # Buscar usuario en la tabla Fotografo
+            try:
+                usuario = Fotografo.objects.get(email=body['email'])
+            except Fotografo.DoesNotExist:
+                return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+
             # Autenticar usuario
-            Fotografo = authenticate(request, email=body['email'], contrasena=body['contrasena'])
-            if Fotografo is not None:
+            if usuario.contrasena == body['contrasena']:
                 # Iniciar sesión y generar token de sesión
-                login(request, Fotografo)
-                session_token = Fotografo.auth_token.key
+                login(request, usuario)
+                session_token = usuario.auth_token.key
                 return JsonResponse({'session_token': session_token}, status=201)
             else:
-                # Usuario no encontrado o contraseña incorrecta
-                try:
-                    Fotografo.objects.get(email=body['email'])
-                    return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
-                except Fotografo.DoesNotExist:
-                    return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+                # Contraseña incorrecta
+                return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+        elif tipo_usuario == "Agencia":
+            # Buscar usuario en la tabla Agencia
+            try:
+                usuario = Agencia.objects.get(email=body['email'])
+            except Agencia.DoesNotExist:
+                return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+
+            # Autenticar usuario
+            if usuario.contrasena == body['contrasena']:
+                # Iniciar sesión y generar token de sesión
+                login(request, usuario)
+                session_token = usuario.auth_token.key
+                return JsonResponse({'session_token': session_token}, status=201)
+            else:
+                # Contraseña incorrecta
+                return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
+        elif tipo_usuario == "Clientes":
+            # Buscar usuario en la tabla Clientes
+            try:
+                usuario = Clientes.objects.get(email=body['email'])
+            except Clientes.DoesNotExist:
+                return JsonResponse({'error': 'No se encontró el usuario'}, status=404)
+
+            # Autenticar usuario
+            if usuario.contrasena == body['contrasena']:
+                # Iniciar sesión y generar token de sesión
+                login(request, usuario)
+                session_token = usuario.auth_token.key
+                return JsonResponse({'session_token': session_token}, status=201)
+            else:
+                # Contraseña incorrecta
+                return JsonResponse({'error': 'Contraseña incorrecta'}, status=401)
         else:
-            return JsonResponse({'error': 'Método no permitido'}, status=405)
+            return JsonResponse({'error': 'Tipo de usuario no válido'}, status=400)
 
 
 @csrf_exempt
