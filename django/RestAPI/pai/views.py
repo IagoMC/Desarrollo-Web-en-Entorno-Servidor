@@ -154,8 +154,8 @@ def aComentaris(request, fotografo_id):
 
         comentarioFotografo = Comentariofotografo.objects.create(
             id=Comentariofotografo.objects.count()+1,
-            idusuario=usuario.id,
-            idfotografo=fotografo_id,
+            idusuario=usuario,
+            idfotografo=fotografo,
             comentario=comentario,
             valoracion=int(rating),
         )
