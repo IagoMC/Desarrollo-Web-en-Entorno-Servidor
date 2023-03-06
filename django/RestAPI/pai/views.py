@@ -44,10 +44,10 @@ def buscar_photograpers(request):
         fotografo = fotografo.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
-    media_valoracion = fotografo.aggregate(Avg('comentariofotografo__valoracion'))['comentariofotografo__valoracion__avg']
 
-    # Ordenar por valoración promedio (de mayor a menor)
-    #fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
+    # Calcular la media de valoración para cada fotógrafo en la lista de resultados
+    for fotografo_obj in fotografo:
+        fotografo_obj.media_valoracion = fotografo_obj.comentariofotografo_set.aggregate(Avg('valoracion'))['valoracion__avg']
 
     # Obtener el parámetro "size" de la petición GET
     size = request.GET.get("size")
@@ -75,15 +75,15 @@ def buscar_photograpers(request):
 
     # Crear una lista vacía para almacenar los resultados de la consulta
     data = []
-    for fotografo in fotografo:
+    for fotografo_obj in fotografo:
         # Para cada objeto Fotografo, agregar un diccionario con sus datos a la lista "data"
         data.append(
             {
-                "id": fotografo.id,
-                "name": fotografo.nombre,
-                "apellido": fotografo.apellido,
-                "description": fotografo.descripcion,
-                "email": fotografo.email,
+                "id": fotografo_obj.id,
+                "name": fotografo_obj.nombre,
+                "apellido": fotografo_obj.apellido,
+                "description": fotografo_obj.descripcion,
+                "email": fotografo_obj.email,
                 "telefono": fotografo.telefono,
                 "ciudad": fotografo.ciudad,
                 "tiktok": fotografo.tiktok,
