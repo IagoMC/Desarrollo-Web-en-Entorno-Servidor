@@ -29,7 +29,6 @@ import string
 
 from django.core.paginator import Paginator
 
-# Decorador para requerir peticiones GET solamente
 @require_GET
 def buscar_photograpers(request):
     # Obtener el parámetro "query" de la petición GET
@@ -45,6 +44,7 @@ def buscar_photograpers(request):
         fotografo = fotografo.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
+    media_valoracion = fotografo.aggregate(Avg('comentariofotografo__valoracion'))['comentariofotografo__valoracion__avg']
 
     # Ordenar por valoración promedio (de mayor a menor)
     #fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
@@ -71,7 +71,7 @@ def buscar_photograpers(request):
         # Obtener el objeto Page correspondiente a la página actual
         page_obj = paginator.get_page(page_number)
         # Actualizar la lista de objetos Fotografo con los objetos de la página actual
-       	fotografo = page_obj.object_list
+        fotografo = page_obj.object_list
 
     # Crear una lista vacía para almacenar los resultados de la consulta
     data = []
@@ -81,16 +81,16 @@ def buscar_photograpers(request):
             {
                 "id": fotografo.id,
                 "name": fotografo.nombre,
-				"apellido": fotografo.apellido,
+                "apellido": fotografo.apellido,
                 "description": fotografo.descripcion,
-				"email": fotografo.email,
-				"telefono": fotografo.telefono,
+                "email": fotografo.email,
+                "telefono": fotografo.telefono,
                 "ciudad": fotografo.ciudad,
-				"tiktok": fotografo.tiktok,
+                "tiktok": fotografo.tiktok,
                 "twitter": fotografo.twitter,
-				"instagram": fotografo.instagram,
-				"fotoperfil": fotografo.fotoperfil,
-                
+                "instagram": fotografo.instagram,
+                "fotoperfil": fotografo.fotoperfil,
+                "media": media_valoracion,
             }
         )
 
@@ -101,7 +101,7 @@ def buscar_photograpers(request):
     elif size:
         return JsonResponse({
             #"count": paginator.count,
-            #"num_pages": paginator.num_pages,
+            #"num_pages": paginator
             #"page_range": list(paginator.page_range),
             "results": data
         }, safe=False)
