@@ -71,7 +71,7 @@ def buscar_photograpers(request):
         # Obtener el objeto Page correspondiente a la página actual
         page_obj = paginator.get_page(page_number)
         # Actualizar la lista de objetos Fotografo con los objetos de la página actual
-        fotografo = page_obj.object_list
+       	fotografo = page_obj.object_list
 
     # Crear una lista vacía para almacenar los resultados de la consulta
     data = []
@@ -81,7 +81,15 @@ def buscar_photograpers(request):
             {
                 "id": fotografo.id,
                 "name": fotografo.nombre,
+				"apellido": fotografo.apellido,
                 "description": fotografo.descripcion,
+				"email": fotografo.email,
+				"telefono": fotografo.telefono,
+                "ciudad": fotografo.ciudad,
+				"tiktok": fotografo.tiktok,
+                "twitter": fotografo.twitter,
+				"instagram": fotografo.instagram,
+				"fotoperfil": fotografo.fotoperfil,
                 
             }
         )
@@ -92,9 +100,9 @@ def buscar_photograpers(request):
     # Si se ha especificado un tamaño de página, devolver la página actual y la información de paginación
     elif size:
         return JsonResponse({
-            "count": paginator.count,
-            "num_pages": paginator.num_pages,
-            "page_range": list(paginator.page_range),
+            #"count": paginator.count,
+            #"num_pages": paginator.num_pages,
+            #"page_range": list(paginator.page_range),
             "results": data
         }, safe=False)
     # Si se ha especificado una consulta pero no un tamaño de página, devolver los resultados sin paginación
