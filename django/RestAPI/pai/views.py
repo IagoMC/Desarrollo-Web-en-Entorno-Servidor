@@ -30,7 +30,7 @@ import string
 from django.core.paginator import Paginator
 
 @require_GET
-def buscar_photographers(request):
+def buscar_photograpers(request):
     # Obtener el parámetro "query" de la petición GET
     query = request.GET.get("query")
 
