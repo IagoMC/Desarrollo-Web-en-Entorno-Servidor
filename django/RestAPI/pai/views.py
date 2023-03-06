@@ -84,12 +84,12 @@ def buscar_photograpers(request):
                 "apellido": fotografo_obj.apellido,
                 "description": fotografo_obj.descripcion,
                 "email": fotografo_obj.email,
-                "telefono": fotografo.telefono,
-                "ciudad": fotografo.ciudad,
-                "tiktok": fotografo.tiktok,
-                "twitter": fotografo.twitter,
-                "instagram": fotografo.instagram,
-                "fotoperfil": fotografo.fotoperfil,
+                "telefono": fotografo_obj.telefono,
+                "ciudad": fotografo_obj.ciudad,
+                "tiktok": fotografo_obj.tiktok,
+                "twitter": fotografo_obj.twitter,
+                "instagram": fotografo_obj.instagram,
+                "fotoperfil": fotografo_obj.fotoperfil,
                 "media": media_valoracion,
             }
         )
