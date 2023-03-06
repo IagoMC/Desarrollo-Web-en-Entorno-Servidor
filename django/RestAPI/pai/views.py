@@ -62,7 +62,7 @@ def buscar_photographers(request):
             # Si el tamaño de página no es un entero válido, no se usa paginación
             size = None
 
-    # Obtener el parámetro "media" de la petición GET
+    # Filtrar por media de valoración si se ha especificado una media válida
     media = request.GET.get("media")
     if media:
         try:
@@ -72,9 +72,9 @@ def buscar_photographers(request):
             # Si la media no es un número decimal válido, no se filtra por media
             media = None
 
-    # Filtrar por media de valoración si se ha especificado una media válida
-    if media:
-        photographers = photographers.filter(media_valoracion__gte=media)
+        # Filtrar por media de valoración si se ha especificado una media válida
+        if media:
+            photographers = photographers.filter(media_valoracion__gte=media)
 
     # Paginar los resultados de la consulta si se ha especificado un tamaño de página válido
     if size:
@@ -104,7 +104,7 @@ def buscar_photographers(request):
                 "twitter": photographer.twitter,
                 "instagram": photographer.instagram,
                 "fotoperfil": photographer.fotoperfil,
-                "media": photographer.media_valor
+                "media": photographer.media_valoracion
             }
         )
 
