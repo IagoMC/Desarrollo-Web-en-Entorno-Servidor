@@ -90,7 +90,7 @@ def buscar_photograpers(request):
                 "twitter": fotografo_obj.twitter,
                 "instagram": fotografo_obj.instagram,
                 "fotoperfil": fotografo_obj.fotoperfil,
-                "media": media_valoracion,
+                "media": fotografo_obj.media_valoracion,
             }
         )
 
