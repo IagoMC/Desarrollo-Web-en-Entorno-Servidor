@@ -30,7 +30,7 @@ import string
 from django.core.paginator import Paginator
 
 @require_GET
-def buscar_photograpers(request):
+def buscar_photographers(request):
     # Obtener el parámetro "query" de la petición GET
     query = request.GET.get("query")
 
@@ -117,17 +117,7 @@ def buscar_photograpers(request):
     # Si no se ha especificado ninguna consulta ni tamaño de página, devolver todos los objetos Fotografo
     if not query and not size:
         return JsonResponse(data, safe=False)
-    # Si se ha especificado un tamaño de página, devolver la página actual y la información de paginación
-    elif size:
-        return JsonResponse({
-            #"count": paginator.count,
-            #"num_pages": paginator
-            #"page_range": list(paginator.page_range),
-            "results": data
-        }, safe=False)
-    # Si se ha especificado una consulta pero no un tamaño de página, devolver los resultados sin paginación
-    else:
-        return JsonResponse(data, safe=False)
+    # Si se ha especificado un tamaño de página, devolver la página
 
 		
 @csrf_exempt
