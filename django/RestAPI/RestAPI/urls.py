@@ -7,7 +7,7 @@ from pai import views
 urlpatterns = [
  #   path('editar', views.editar_perfitl),
    # path('password', views.cambiar_contrasena),
-    path('getphographers', views.buscar_photograpers),
+    path('getphographers', views.buscar_photographers),
     path('regi', views.ruser),
     path('login', views.loguearse),
     path('fotografos/<int:fotografo_id>/comentarios/', views.aComentaris),
