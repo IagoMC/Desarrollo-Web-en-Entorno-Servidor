@@ -225,6 +225,8 @@ def aComentaris(request, fotografo_id):
         )
         return JsonResponse({'message': 'Comentario y valoración publicados'}, status=201)  
 """
+ValueError: The view pai.views.buscar_photographers didn't return an HttpResponse object. It returned None instead.
+
 ValueError: Cannot assign "9": "Comentariofotografo.idusuario" must be a "Clientes" instance.
 ValueError: Cannot assign "<Agencia: Agencia object (1)>": "Comentariofotografo.idusuario" must be a "Clientes" instance.
 ValueError: Cannot assign "1": "Comentariofotografo.idusuario" must be a "Clientes" instance.
