@@ -27,23 +27,56 @@ import json
 import random
 import string
 
+from django.core.paginator import Paginator
+
+# Decorador para requerir peticiones GET solamente
 @require_GET
 def buscar_photograpers(request):
+    # Obtener el parámetro "query" de la petición GET
     query = request.GET.get("query")
+    # Obtener todos los objetos Fotografo de la base de datos
     fotografo = Fotografo.objects.all()
 
-    # Filter by query
+    # Filtrar por consulta
     if query:
+        # Convertir la consulta a minúsculas
         query = query.lower()
+        # Filtrar los objetos Fotografo por nombre, descripción y ciudad que contengan la consulta
         fotografo = fotografo.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
 
-    # Sort by average rating (from highest to lowest)
+    # Ordenar por valoración promedio (de mayor a menor)
     #fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
 
+    # Obtener el parámetro "size" de la petición GET
+    size = request.GET.get("size")
+    if size:
+        try:
+            # Convertir el tamaño de página a un entero
+            size = int(size)
+            # Si el tamaño de página es menor que 1, no se usa paginación
+            if size < 1:
+                size = None
+        except ValueError:
+            # Si el tamaño de página no es un entero válido, no se usa paginación
+            size = None
+
+    # Paginar los resultados de la consulta si se ha especificado un tamaño de página válido
+    if size:
+        # Crear un objeto Paginator con la lista de objetos Fotografo y el tamaño de página
+        paginator = Paginator(fotografo, size)
+        # Obtener el número de página actual de la petición GET
+        page_number = request.GET.get("page")
+        # Obtener el objeto Page correspondiente a la página actual
+        page_obj = paginator.get_page(page_number)
+        # Actualizar la lista de objetos Fotografo con los objetos de la página actual
+        fotografo = page_obj.object_list
+
+    # Crear una lista vacía para almacenar los resultados de la consulta
     data = []
     for fotografo in fotografo:
+        # Para cada objeto Fotografo, agregar un diccionario con sus datos a la lista "data"
         data.append(
             {
                 "id": fotografo.id,
@@ -53,7 +86,20 @@ def buscar_photograpers(request):
             }
         )
 
-    return JsonResponse(data, safe=False)
+    # Si no se ha especificado ninguna consulta ni tamaño de página, devolver todos los objetos Fotografo
+    if not query and not size:
+        return JsonResponse(data, safe=False)
+    # Si se ha especificado un tamaño de página, devolver la página actual y la información de paginación
+    elif size:
+        return JsonResponse({
+            "count": paginator.count,
+            "num_pages": paginator.num_pages,
+            "page_range": list(paginator.page_range),
+            "results": data
+        }, safe=False)
+    # Si se ha especificado una consulta pero no un tamaño de página, devolver los resultados sin paginación
+    else:
+        return JsonResponse(data, safe=False)
 
 		
 @csrf_exempt
