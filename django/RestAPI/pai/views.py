@@ -30,9 +30,10 @@ import string
 from django.core.paginator import Paginator
 
 @require_GET
-def buscar_photograpers(request):
+def buscar_photographers(request):
     # Obtener el parámetro "query" de la petición GET
     query = request.GET.get("query")
+
     # Obtener todos los objetos Fotografo de la base de datos
     photographers = Fotografo.objects.all()
 
@@ -40,21 +41,20 @@ def buscar_photograpers(request):
     if query:
         # Convertir la consulta a minúsculas
         query = query.lower()
+
         # Filtrar los objetos Fotografo por nombre, descripción y ciudad que contengan la consulta
         photographers = photographers.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
 
-    # Calcular la media de valoración para cada fotógrafo en la lista de resultados
-    for photographer in photographers:
-        photographer.media_valoracion = photographer.comentariofotografo_set.aggregate(Avg('valoracion'))['valoracion__avg']
-
     # Obtener el parámetro "size" de la petición GET
     size = request.GET.get("size")
+
     if size:
         try:
             # Convertir el tamaño de página a un entero
             size = int(size)
+
             # Si el tamaño de página es menor que 1, no se usa paginación
             if size < 1:
                 size = None
@@ -62,33 +62,39 @@ def buscar_photograpers(request):
             # Si el tamaño de página no es un entero válido, no se usa paginación
             size = None
 
-    # Filtrar por media de valoración si se ha especificado una media válida
+    # Obtener el parámetro "media" de la petición GET
     media = request.GET.get("media")
+
     if media:
         try:
             # Convertir la media a un número decimal
             media = float(media)
+
+            # Filtrar los objetos Fotografo por media de valoración
+            photographers = photographers.annotate(media_valoracion=Avg('comentariofotografo__valoracion')).filter(
+                media_valoracion__gte=media)
+
         except ValueError:
             # Si la media no es un número decimal válido, no se filtra por media
-            media = None
-
-        # Filtrar por media de valoración si se ha especificado una media válida
-        if media:
-            photographers = photographers.filter(media_valoracion__gte=media)
+            pass
 
     # Paginar los resultados de la consulta si se ha especificado un tamaño de página válido
     if size:
         # Crear un objeto Paginator con la lista de objetos Fotografo y el tamaño de página
         paginator = Paginator(photographers, size)
+
         # Obtener el número de página actual de la petición GET
         page_number = request.GET.get("page")
+
         # Obtener el objeto Page correspondiente a la página actual
         page_obj = paginator.get_page(page_number)
+
         # Actualizar la lista de objetos Fotografo con los objetos de la página actual
         photographers = page_obj.object_list
 
     # Crear una lista vacía para almacenar los resultados de la consulta
     data = []
+
     for photographer in photographers:
         # Para cada objeto Fotografo, agregar un diccionario con sus datos a la lista "data"
         data.append(
