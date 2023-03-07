@@ -33,8 +33,8 @@ def buscar_photographers(request):
         )
 
     if media:
-        fotografo = fotografo.annotate(average_rating=Avg("comentariofotografo__valoracion")).filter(
-            average_rating=float(media)
+        fotografo = fotografo.annotate(rating=Avg("comentariofotografo__valoracion")).filter(
+            rating=float(media)
         )
 
     if size:
