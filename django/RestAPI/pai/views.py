@@ -103,8 +103,6 @@ def ruser(request):
         email = body['email']
         nombre = body['nombre']
         contrasena = body['contrasena']
-        #telefono = int(body['telefono'])  # convertir el valor de "telefono" de string a int
-        #ciudad = body['ciudad']
         modelos_usuario = {
             'Agencia': Agencia,
             'Clientes': Clientes,
@@ -116,7 +114,6 @@ def ruser(request):
                 if usuario_modelo.objects.filter(email=email).exists():
                     return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
                 usuario = usuario_modelo(id=id, email=email, nombre=nombre,contrasena=contrasena)
-                #usuario.set_password(contrasena)
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201, safe=False)
             except Exception as e:
