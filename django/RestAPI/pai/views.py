@@ -132,7 +132,7 @@ def ruser(request):
 @csrf_exempt
 def loguearse(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         email = data.get('email')
         contrasena = data.get('contrasena')
 
@@ -166,7 +166,7 @@ def loguearse(request):
 def aComentaris(request, fotografo_id):
     if request.method == 'POST':
         token = request.headers.get('token')
-        data = json.loads(request.body)
+        data = json.loads(request.body.decode('utf-8'))
         comentario = data.get('comentario')
         rating = data.get('rating')
 
