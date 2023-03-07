@@ -59,10 +59,18 @@ def buscar_photographers(request):
         media_valoracion = comentarios.aggregate(Avg('valoracion'))['valoracion__avg']
         data.append(
             {
-                "id": fotografo.id,
-                "name": fotografo.nombre,
-                "description": fotografo.descripcion,
-                "average_rating": media_valoracion,
+	        "id": fotografo.id,
+	        "name": fotografo.nombre,
+	        "apellido": fotografo.apellido,
+	        "email": fotografo.email,
+	        "description": fotografo.descripcion,		
+	        "telefono": fotografo.telefono,
+	        "ciudad": fotografo.ciudad,
+	        "tiktok": fotografo.tiktok,
+	        "twitter": fotografo.twitter,
+	        "instagram": fotografo.instagram,
+	        "fotoPerfil": fotografo.fotoperfil,
+                "media": media_valoracion,
             }
         )
 
