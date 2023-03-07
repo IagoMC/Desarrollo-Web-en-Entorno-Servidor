@@ -86,34 +86,38 @@ def ruser(request):
         # parsear el cuerpo de la solicitud
         bodyunicode = request.body.decode('utf-8')
         body = json.loads(bodyunicode)
-        
+
         # validar campos requeridos
-        campos_requeridos = ['type', 'id', 'email', 'nombre', 'contrasena', 'ccontrasena']
+        campos_requeridos = ['type', 'id', 'email', 'nombre', 'contrasena', 'ccontrasena', 'telefono', 'ciudad']
         for campo in campos_requeridos:
             if campo not in body:
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
-        
+
         # validar que los campos de contraseña coincidan
         if body['contrasena'] != body['ccontrasena']:
             return JsonResponse({'error': 'Los campos de contraseña no coinciden'}, status=400)
-        
+
         # crear usuario
         tipo_usuario = body['type']
         id = int(body['id'])  # convertir el valor de "id" de string a int
         email = body['email']
         nombre = body['nombre']
         contrasena = body['contrasena']
+        telefono = body['telefono']
+        ciudad = body['ciudad'] if tipo_usuario != 'Clientes' else None
+
         modelos_usuario = {
             'Agencia': Agencia,
             'Clientes': Clientes,
             'Fotografo': Fotografo,
         }
+
         if tipo_usuario in modelos_usuario:
             try:
                 usuario_modelo = modelos_usuario[tipo_usuario]
                 if usuario_modelo.objects.filter(email=email).exists():
                     return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
-                usuario = usuario_modelo(id=id, email=email, nombre=nombre,contrasena=contrasena)
+                usuario = usuario_modelo(id=id, email=email, nombre=nombre, contrasena=contrasena, telefono=telefono, ciudad=ciudad)
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201, safe=False)
             except Exception as e:
