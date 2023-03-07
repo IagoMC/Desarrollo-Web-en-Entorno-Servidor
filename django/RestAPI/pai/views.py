@@ -52,7 +52,15 @@ def buscar_photographers(request):
             {
                 "id": fotografo.id,
                 "name": fotografo.nombre,
-                "description": fotografo.descripcion,
+                "apellido": fotografo.apellido,
+                "email": fotografo.email,
+                "description": fotografo.descripcion,		
+                "telefono": fotografo.telefono,
+                "ciudad": fotografo.ciudad,
+                "tiktok": fotografo.tiktok,
+                "twitter": fotografo.twitter,
+                "instagram": fotografo.instagram,
+                "fotoPerfil": fotografo.fotoPerfil,		    
             }
         )
 
