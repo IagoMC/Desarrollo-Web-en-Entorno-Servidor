@@ -88,7 +88,7 @@ def ruser(request):
         body = json.loads(bodyunicode)
         
         # validar campos requeridos
-        campos_requeridos = ['type', 'id', 'email', 'nombre', 'contrasena', 'ccontrasena', 'telefono', 'ciudad']
+        campos_requeridos = ['type', 'id', 'email', 'nombre', 'contrasena', 'ccontrasena']
         for campo in campos_requeridos:
             if campo not in body:
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
@@ -103,8 +103,8 @@ def ruser(request):
         email = body['email']
         nombre = body['nombre']
         contrasena = body['contrasena']
-        telefono = int(body['telefono'])  # convertir el valor de "telefono" de string a int
-        ciudad = body['ciudad']
+        #telefono = int(body['telefono'])  # convertir el valor de "telefono" de string a int
+        #ciudad = body['ciudad']
         modelos_usuario = {
             'Agencia': Agencia,
             'Clientes': Clientes,
@@ -115,7 +115,7 @@ def ruser(request):
                 usuario_modelo = modelos_usuario[tipo_usuario]
                 if usuario_modelo.objects.filter(email=email).exists():
                     return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
-                usuario = usuario_modelo(id=id, email=email, nombre=nombre,contrasena=contrasena, telefono=telefono, ciudad=ciudad)
+                usuario = usuario_modelo(id=id, email=email, nombre=nombre,contrasena=contrasena)
                 #usuario.set_password(contrasena)
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201, safe=False)
