@@ -84,8 +84,8 @@ def buscar_photographers(request):
 def ruser(request):
     if request.method == 'POST':
         # parsear el cuerpo de la solicitud
-        bodyunicode = request.body.decode('utf-8')
-        body = json.loads(bodyunicode)
+        data = json.loads(request.body)
+
 
         # validar campos requeridos
         campos_requeridos = ['type', 'id', 'email', 'nombre', 'contrasena', 'ccontrasena', 'telefono', 'ciudad']
@@ -132,7 +132,7 @@ def ruser(request):
 @csrf_exempt
 def loguearse(request):
     if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
+        data = json.loads(request.body)
         email = data.get('email')
         contrasena = data.get('contrasena')
 
@@ -166,7 +166,7 @@ def loguearse(request):
 def aComentaris(request, fotografo_id):
     if request.method == 'POST':
         token = request.headers.get('token')
-        data = json.loads(request.body.decode('utf-8'))
+        data = json.loads(request.body)
         comentario = data.get('comentario')
         rating = data.get('rating')
 
