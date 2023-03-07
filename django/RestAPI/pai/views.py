@@ -62,15 +62,15 @@ def buscar_photographers(request):
 	        "id": fotografo.id,
 	        "name": fotografo.nombre,
 	        "apellido": fotografo.apellido,
-	        "email": fotografo.email.encode,
-	        "description": fotografo.descripcion.encode,		
+	        "email": fotografo.email,
+	        "description": fotografo.descripcion,		
 	        "telefono": fotografo.telefono,
 	        "ciudad": fotografo.ciudad,
-	        "tiktok": fotografo.tiktok.encode,
-	        "twitter": fotografo.twitter.encode,
-	        "instagram": fotografo.instagram.encode,
-	        "fotoPerfil": fotografo.fotoperfil.encode,
-            "media": media_valoracion,
+	        "tiktok": fotografo.tiktok,
+	        "twitter": fotografo.twitter,
+	        "instagram": fotografo.instagram,
+	        "fotoPerfil": fotografo.fotoperfil,
+                "media": media_valoracion,
             }
         )
 
@@ -78,7 +78,7 @@ def buscar_photographers(request):
     if size:
         response["count"] = len(data)
 
-    return JsonResponse(response, safe=False, json_dumps_params={'ensure_ascii': False})
+    return JsonResponse(response, safe=False)
 		
 @csrf_exempt
 def ruser(request):
