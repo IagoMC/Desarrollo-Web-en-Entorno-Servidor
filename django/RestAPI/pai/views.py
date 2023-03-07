@@ -30,95 +30,31 @@ import string
 from django.core.paginator import Paginator
 
 @require_GET
-def buscar_photographers(request):
-    # Obtener el parámetro "query" de la petición GET
+def buscar_photograpers(request):
     query = request.GET.get("query")
-
-    # Obtener todos los objetos Fotografo de la base de datos
     fotografo = Fotografo.objects.all()
 
-    # Filtrar por consulta
+    # Filter by query
     if query:
-        # Convertir la consulta a minúsculas
         query = query.lower()
-
-        # Filtrar los objetos Fotografo por nombre, descripción y ciudad que contengan la consulta
         fotografo = fotografo.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
 
-    # Obtener el parámetro "size" de la petición GET
-    size = request.GET.get("size")
+    # Sort by average rating (from highest to lowest)
+    # fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
 
-    if size:
-        try:
-            # Convertir el tamaño de página a un entero
-            size = int(size)
-
-            # Si el tamaño de página es menor que 1, no se usa paginación
-            if size < 1:
-                size = None
-        except ValueError:
-            # Si el tamaño de página no es un entero válido, no se usa paginación
-            size = None
-
-    # Obtener el parámetro "media" de la petición GET
-    media = request.GET.get("media")
-
-    if media:
-        try:
-            # Convertir la media a un número decimal
-            media = float(media)
-
-            # Filtrar los objetos Fotografo por media de valoración
-            fotografo = fotografo.annotate(media_valoracion=Avg('comentariofotografo__valoracion')).filter(
-                media_valoracion__gte=media)
-
-        except ValueError:
-            # Si la media no es un número decimal válido, no se filtra por media
-            pass
-
-    # Paginar los resultados de la consulta si se ha especificado un tamaño de página válido
-    if size:
-        # Crear un objeto Paginator con la lista de objetos Fotografo y el tamaño de página
-        paginator = Paginator(fotografo, size)
-
-        # Obtener el número de página actual de la petición GET
-        page_number = request.GET.get("page")
-
-        # Obtener el objeto Page correspondiente a la página actual
-        page_obj = paginator.get_page(page_number)
-
-        # Actualizar la lista de objetos Fotografo con los objetos de la página actual
-        fotografo = page_obj.object_list
-
-    # Crear una lista vacía para almacenar los resultados de la consulta
     data = []
-
-    for f in fotografo:
-        # Para cada objeto Fotografo, agregar un diccionario con sus datos a la lista "data"
+    for fotografo in fotografo:
         data.append(
             {
-                "id": f.id,
-                "name": f.nombre,
-                "apellido": f.apellido,
-                "description": f.descripcion,
-                "email": f.email,
-                "telefono": f.telefono,
-                "ciudad": f.ciudad,
-                "tiktok": f.tiktok,
-                "twitter": f.twitter,
-                "instagram": f.instagram,
-                "fotoperfil": f.fotoperfil,
-                "media": f.comentariofotografo_set.aggregate(media_valoracion=Avg('valoracion'))['media_valoracion']
+                "id": fotografo.id,
+                "name": fotografo.nombre,
+                "description": fotografo.descripcion,
             }
         )
-    # Si no se ha especificado ninguna consulta ni tamaño de página, devolver todos los objetos Fotografo
 
-    if not query and not size and not media:
-    	return JsonResponse(data, safe=False)
-    # Si se ha especificado un tamaño de página, devolver la página
-
+    return JsonResponse(data, safe=False)
 		
 @csrf_exempt
 def ruser(request):
