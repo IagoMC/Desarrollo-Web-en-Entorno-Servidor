@@ -127,33 +127,33 @@ def ruser(request):
 
 @csrf_exempt
 def loguearse(request):
- if request.method == 'POST':
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('email')
+        contrasena = data.get('contrasena')
 
-    data = json.loads(request.body)
-    email = data.get('email')
-    contrasena = data.get('contrasena')
+        if not email or not contrasena:
+            return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400, safe=False)
 
-    if not email or not contrasena:
-        return JsonResponse({'error': 'Faltan datos en el cuerpo'}, status=400, safe=False)
-
-    try:
-        usuario = Clientes.objects.get(email=email)
-    except Clientes.DoesNotExist:
         try:
-            usuario = Fotografo.objects.get(email=email)
-        except Fotografo.DoesNotExist:
+            usuario = Clientes.objects.get(email=email)
+        except Clientes.DoesNotExist:
             try:
-                usuario = Agencia.objects.get(email=email)
-            except Agencia.DoesNotExist:
-                return JsonResponse({'error': 'No se encontró el usuario'}, status=404, safe=False)
+                usuario = Fotografo.objects.get(email=email)
+            except Fotografo.DoesNotExist:
+                try:
+                    usuario = Agencia.objects.get(email=email)
+                except Agencia.DoesNotExist:
+                    return JsonResponse({'error': 'No se encontró el usuario'}, status=404, safe=False)
 
-    if usuario.contrasena != contrasena:
-        return JsonResponse({'error': 'Contraseña incorrecta'}, status=401, safe=False)
+        if usuario.contrasena != contrasena:
+            return JsonResponse({'error': 'Contraseña incorrecta'}, status=401, safe=False)
 
-    token = ''.join(choices(ascii_uppercase + digits, k=6))
-    #Sesion.objects.create(usuario=usuario, token=token)
+        token = ''.join(choices(ascii_uppercase + digits, k=6))
+        usuario.token = token
+        usuario.save()
 
-    return JsonResponse({'sesiontoken': token}, status=201, safe=False)
+        return JsonResponse({'sesiontoken': token}, status=201, safe=False)
 
 @csrf_exempt
 def aComentaris(request, fotografo_id):
