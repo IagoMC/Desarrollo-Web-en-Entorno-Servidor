@@ -64,7 +64,7 @@ def buscar_photographers(request):
 	        "apellido": fotografo.apellido.encode('utf-8'),
 	        "email": fotografo.email.encode('utf-8'),
 	        "description": fotografo.descripcion.encode('utf-8'),		
-	        "telefono": fotografo.telefono.encode('utf-8'),
+	        "telefono": fotografo.telefono,
 	        "ciudad": fotografo.ciudad.encode('utf-8'),
 	        "tiktok": fotografo.tiktok.encode('utf-8'),
 	        "twitter": fotografo.twitter.encode('utf-8'),
