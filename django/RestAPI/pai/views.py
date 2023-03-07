@@ -60,16 +60,16 @@ def buscar_photographers(request):
         data.append(
             {
 	        "id": fotografo.id,
-	        "name": fotografo.nombre,
-	        "apellido": fotografo.apellido,
-	        "email": fotografo.email,
-	        "description": fotografo.descripcion,		
-	        "telefono": fotografo.telefono,
-	        "ciudad": fotografo.ciudad,
-	        "tiktok": fotografo.tiktok,
-	        "twitter": fotografo.twitter,
-	        "instagram": fotografo.instagram,
-	        "fotoPerfil": fotografo.fotoperfil,
+	        "name": fotografo.nombre.encode('utf-8'),
+	        "apellido": fotografo.apellido.encode('utf-8'),
+	        "email": fotografo.email.encode('utf-8'),
+	        "description": fotografo.descripcion.encode('utf-8'),		
+	        "telefono": fotografo.telefono.encode('utf-8'),
+	        "ciudad": fotografo.ciudad.encode('utf-8'),
+	        "tiktok": fotografo.tiktok.encode('utf-8'),
+	        "twitter": fotografo.twitter.encode('utf-8'),
+	        "instagram": fotografo.instagram.encode('utf-8'),
+	        "fotoPerfil": fotografo.fotoperfil.encode('utf-8'),
                 "media": media_valoracion,
             }
         )
@@ -78,7 +78,7 @@ def buscar_photographers(request):
     if size:
         response["count"] = len(data)
 
-    return JsonResponse(response, safe=False)
+    return JsonResponse(response, safe=False, json_dumps_params={'ensure_ascii': False})
 		
 @csrf_exempt
 def ruser(request):
