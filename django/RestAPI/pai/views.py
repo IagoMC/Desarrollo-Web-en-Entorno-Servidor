@@ -149,9 +149,12 @@ def loguearse(request):
         if usuario.contrasena != contrasena:
             return JsonResponse({'error': 'Contraseña incorrecta'}, status=401, safe=False)
 
-        token = ''.join(choices(ascii_uppercase + digits, k=6))
-        usuario.token = token
-        usuario.save()
+        if not usuario.token:
+            token = ''.join(choices(ascii_uppercase + digits, k=6))
+            usuario.token = token
+            usuario.save()
+        else:
+            token = usuario.token
 
         return JsonResponse({'sesiontoken': token}, status=201, safe=False)
 
