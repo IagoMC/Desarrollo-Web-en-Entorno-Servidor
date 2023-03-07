@@ -62,7 +62,8 @@ def buscar_photographers(request):
                 "tiktok": fotografo.tiktok,
                 "twitter": fotografo.twitter,
                 "instagram": fotografo.instagram,
-                "fotoPerfil": fotografo.fotoperfil,	
+                "fotoPerfil": fotografo.fotoperfil,
+				"media": media_valoracion,	
 
             }
         )
