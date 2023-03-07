@@ -48,6 +48,8 @@ def buscar_photographers(request):
 
     data = []
     for fotografo in fotografo:
+        comentarios = Comentariofotografo.objects.filter(idfotografo=fotografo)
+        media_valoracion = comentarios.aggregate(Avg('valoracion'))['valoracion__avg']
         data.append(
             {
                 "id": fotografo.id,
@@ -60,7 +62,8 @@ def buscar_photographers(request):
                 "tiktok": fotografo.tiktok,
                 "twitter": fotografo.twitter,
                 "instagram": fotografo.instagram,
-                "fotoPerfil": fotografo.fotoperfil,		    
+                "fotoPerfil": fotografo.fotoperfil,	
+
             }
         )
 
