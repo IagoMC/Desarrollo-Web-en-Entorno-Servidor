@@ -26,6 +26,7 @@ from string import ascii_uppercase, digits
 import json
 import random
 import string
+from django.contrib.auth.hashers import make_password, check_password
 
 from django.core.paginator import Paginator
 
@@ -84,8 +85,8 @@ def buscar_photographers(request):
 def ruser(request):
     if request.method == 'POST':
         # parsear el cuerpo de la solicitud
-        body = json.loads(request.body)
-
+        bodyunicode = request.body.decode('utf-8')
+        body = json.loads(bodyunicode)
 
         # validar campos requeridos
         campos_requeridos = ['type', 'id', 'email', 'nombre', 'contrasena', 'ccontrasena', 'telefono', 'ciudad']
@@ -97,12 +98,14 @@ def ruser(request):
         if body['contrasena'] != body['ccontrasena']:
             return JsonResponse({'error': 'Los campos de contraseña no coinciden'}, status=400)
 
+        # codificar contraseña
+        contrasena = make_password(body['contrasena'])
+
         # crear usuario
         tipo_usuario = body['type']
         id = int(body['id'])  # convertir el valor de "id" de string a int
         email = body['email']
         nombre = body['nombre']
-        contrasena = body['contrasena']
         telefono = body['telefono']
         ciudad = body['ciudad'] if tipo_usuario != 'Clientes' else None
 
@@ -128,7 +131,6 @@ def ruser(request):
         else:
             return JsonResponse({'error': f'Tipo de usuario no válido: {tipo_usuario}'}, status=400, safe=False)
 
-
 @csrf_exempt
 def loguearse(request):
     if request.method == 'POST':
@@ -150,7 +152,7 @@ def loguearse(request):
                 except Agencia.DoesNotExist:
                     return JsonResponse({'error': 'No se encontró el usuario'}, status=404, safe=False)
 
-        if usuario.contrasena != contrasena:
+        if not check_password(contrasena, usuario.contrasena):
             return JsonResponse({'error': 'Contraseña incorrecta'}, status=401, safe=False)
 
         if not usuario.token:
