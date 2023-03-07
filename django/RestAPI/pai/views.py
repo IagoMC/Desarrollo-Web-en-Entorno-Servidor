@@ -32,6 +32,7 @@ from django.core.paginator import Paginator
 @require_GET
 def buscar_photographers(request):
     query = request.GET.get("query")
+    size = request.GET.get("size")
     fotografo = Fotografo.objects.all()
 
     # Filter by query
@@ -41,8 +42,9 @@ def buscar_photographers(request):
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
 
-    # Sort by average rating (from highest to lowest)
-    # fotografo = fotografo.annotate(average_rating=Avg("comments__rating")).order_by("-average_rating")
+    # Limit number of results
+    if size:
+        fotografo = fotografo[:int(size)]
 
     data = []
     for fotografo in fotografo:
@@ -54,7 +56,11 @@ def buscar_photographers(request):
             }
         )
 
-    return JsonResponse(data, safe=False)
+    response = {"results": data}
+    if size:
+        response["count"] = len(data)
+
+    return JsonResponse(response, safe=False)
 		
 @csrf_exempt
 def ruser(request):
