@@ -114,9 +114,12 @@ def ruser(request):
 
         if tipo_usuario in modelos_usuario:
             try:
+                # buscar en los tres modelos de usuario
+                for usuario_modelo in modelos_usuario.values():
+                    if usuario_modelo.objects.filter(email=email).exists():
+                        return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
+                # si no se encontró el correo electrónico en ningún modelo, crear usuario
                 usuario_modelo = modelos_usuario[tipo_usuario]
-                if usuario_modelo.objects.filter(email=email).exists():
-                    return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
                 usuario = usuario_modelo(id=id, email=email, nombre=nombre, contrasena=contrasena, telefono=telefono, ciudad=ciudad)
                 usuario.save()
                 return JsonResponse({'success': f'Se creó el usuario {email}'}, status=201, safe=False)
