@@ -60,17 +60,17 @@ def buscar_photographers(request):
         data.append(
             {
 	        "id": fotografo.id,
-	        "name": fotografo.nombre.encode('utf-8'),
-	        "apellido": fotografo.apellido.encode('utf-8'),
-	        "email": fotografo.email.encode('utf-8'),
-	        "description": fotografo.descripcion.encode('utf-8'),		
+	        "name": fotografo.nombre,
+	        "apellido": fotografo.apellido,
+	        "email": fotografo.email.encode,
+	        "description": fotografo.descripcion.encode,		
 	        "telefono": fotografo.telefono,
-	        "ciudad": fotografo.ciudad.encode('utf-8'),
-	        "tiktok": fotografo.tiktok.encode('utf-8'),
-	        "twitter": fotografo.twitter.encode('utf-8'),
-	        "instagram": fotografo.instagram.encode('utf-8'),
-	        "fotoPerfil": fotografo.fotoperfil.encode('utf-8'),
-                "media": media_valoracion,
+	        "ciudad": fotografo.ciudad,
+	        "tiktok": fotografo.tiktok.encode,
+	        "twitter": fotografo.twitter.encode,
+	        "instagram": fotografo.instagram.encode,
+	        "fotoPerfil": fotografo.fotoperfil.encode,
+            "media": media_valoracion,
             }
         )
 
