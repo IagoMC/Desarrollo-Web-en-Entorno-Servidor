@@ -33,6 +33,7 @@ from django.core.paginator import Paginator
 def buscar_photographers(request):
     query = request.GET.get("query")
     size = request.GET.get("size")
+    media = request.GET.get("media")
     fotografo = Fotografo.objects.all()
 
     # Filter by query
@@ -40,6 +41,12 @@ def buscar_photographers(request):
         query = query.lower()
         fotografo = fotografo.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
+        )
+
+    # Filter by average rating
+    if media:
+        fotografo = fotografo.annotate(average_rating=Avg("comentariofotografo__valoracion")).filter(
+            average_rating=float(media)
         )
 
     # Limit number of results
@@ -54,17 +61,8 @@ def buscar_photographers(request):
             {
                 "id": fotografo.id,
                 "name": fotografo.nombre,
-                "apellido": fotografo.apellido,
-                "email": fotografo.email,
-                "description": fotografo.descripcion,		
-                "telefono": fotografo.telefono,
-                "ciudad": fotografo.ciudad,
-                "tiktok": fotografo.tiktok,
-                "twitter": fotografo.twitter,
-                "instagram": fotografo.instagram,
-                "fotoPerfil": fotografo.fotoperfil,
-				"media": media_valoracion,	
-
+                "description": fotografo.descripcion,
+                "average_rating": media_valoracion,
             }
         )
 
