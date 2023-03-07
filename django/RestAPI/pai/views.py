@@ -37,20 +37,17 @@ def buscar_photographers(request):
     media = request.GET.get("media")
     fotografo = Fotografo.objects.all()
 
-    # Filter by query
     if query:
         query = query.lower()
         fotografo = fotografo.filter(
             Q(nombre__icontains=query) | Q(descripcion__icontains=query) | Q(ciudad__icontains=query)
         )
 
-    # Filter by average rating
     if media:
         fotografo = fotografo.annotate(average_rating=Avg("comentariofotografo__valoracion")).filter(
             average_rating=float(media)
         )
 
-    # Limit number of results
     if size:
         fotografo = fotografo[:int(size)]
 
@@ -84,22 +81,18 @@ def buscar_photographers(request):
 @csrf_exempt
 def ruser(request):
     if request.method == 'POST':
-        # parsear el cuerpo de la solicitud
         body = json.loads(request.body)
 
-        # validar campos requeridos
         campos_requeridos = ['type', 'id', 'email', 'nombre', 'contrasena', 'ccontrasena', 'telefono', 'ciudad']
         for campo in campos_requeridos:
             if campo not in body:
                 return JsonResponse({'error': f'Falta campo requerido: {campo}'}, status=400)
 
-        # validar que los campos de contraseña coincidan
         if body['contrasena'] != body['ccontrasena']:
             return JsonResponse({'error': 'Los campos de contraseña no coinciden'}, status=400)
 
-        # crear usuario
         tipo_usuario = body['type']
-        id = int(body['id'])  # convertir el valor de "id" de string a int
+        id = int(body['id'])  
         email = body['email']
         nombre = body['nombre']
         contrasena = body['contrasena']
@@ -114,11 +107,9 @@ def ruser(request):
 
         if tipo_usuario in modelos_usuario:
             try:
-                # buscar en los tres modelos de usuario
                 for usuario_modelo in modelos_usuario.values():
                     if usuario_modelo.objects.filter(email=email).exists():
                         return JsonResponse({'error': 'La dirección de correo electrónico ya está en uso'}, status=400, safe=False)
-                # si no se encontró el correo electrónico en ningún modelo, crear usuario
                 usuario_modelo = modelos_usuario[tipo_usuario]
                 usuario = usuario_modelo(id=id, email=email, nombre=nombre, contrasena=contrasena, telefono=telefono, ciudad=ciudad)
                 usuario.save()
