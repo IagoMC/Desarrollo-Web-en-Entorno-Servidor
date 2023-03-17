@@ -11,6 +11,7 @@ urlpatterns = [
     path('registrar', views.ruser),
     path('login', views.loguearse),
     path('fotografos/<int:fotografo_id>/comentarios/', views.aComentaris),
+    path('crear_usuario/', views.crear_usuario, name='crear_usuario'),
 
  
 #    path('user',views.create_user),
